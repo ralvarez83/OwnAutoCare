@@ -6,27 +6,25 @@ import {
   IonTabButton,
   IonLabel,
   IonIcon,
-  IonContent,
 } from '@ionic/angular/standalone';
-import { car, bicycle, bus, boat } from 'ionicons/icons';
+import {
+  car,
+  bicycle,
+  bus,
+  boat,
+  alertCircleOutline,
+  settingsOutline,
+} from 'ionicons/icons';
 import { addIcons } from 'ionicons';
-import { VehicleService } from '../services/vehicle.service';
-import { Vehicle } from '../models/Vehicle';
-import { VehicleTypes } from '../models/VehicleTypes';
+import { VehicleService } from '../../services/vehicle.service';
+import { Vehicle } from '../../models/Vehicle';
+import { VehicleTypes } from '../../models/VehicleTypes';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
-  imports: [
-    CommonModule,
-    IonTabs,
-    IonTabBar,
-    IonTabButton,
-    IonLabel,
-    IonIcon,
-    IonContent,
-  ],
+  imports: [CommonModule, IonTabs, IonTabBar, IonTabButton, IonLabel, IonIcon],
 })
 export class TabsPage implements OnInit {
   vehicles: Vehicle[] = [];
@@ -38,6 +36,8 @@ export class TabsPage implements OnInit {
       bicycle: bicycle,
       bus: bus,
       boat: boat,
+      alertCircleOutline: alertCircleOutline,
+      settingsOutline: settingsOutline,
     });
   }
 

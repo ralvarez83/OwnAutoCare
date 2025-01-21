@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
-import { VehicleDetailComponent } from '../vehicle-detail/vehicle-detail.component';
+import { NoVehiclesComponent } from '../../components/no-vehicles/no-vehicles.component';
+
+import { VehicleDetailComponent } from '../../components/vehicle-detail/vehicle-detail.component';
+import { SettingsComponent } from '../settings/settings.component';
 
 export const routes: Routes = [
   {
@@ -11,6 +14,14 @@ export const routes: Routes = [
         path: 'vehicle/:id',
         component: VehicleDetailComponent,
         pathMatch: 'full',
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent,
+      },
+      {
+        path: 'no-vehicles',
+        component: NoVehiclesComponent,
       },
       // {
       //   path: 'tab1',

@@ -1,0 +1,16 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button *ngFor="let vehicle of vehicles" [tab]="'vehicle/' + vehicle.id">
+      <ion-icon [name]="getVehicleIcon(vehicle.type)" aria-hidden="true"></ion-icon>
+      <ion-label>{{ vehicle.name }}</ion-label>
+    </ion-tab-button>
+    <ion-tab-button  *ngIf="vehicles.length === 0" [tab]="'no-vehicles'">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <ion-label></ion-label>
+    </ion-tab-button>
+    <ion-tab-button [tab]="'settings'">
+      <ion-icon name="settings-outline" aria-hidden="true"></ion-icon>
+      <ion-label>Configuración</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

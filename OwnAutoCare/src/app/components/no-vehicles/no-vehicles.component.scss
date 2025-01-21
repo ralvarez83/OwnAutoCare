@@ -1,0 +1,27 @@
+/* filepath: /Users/rubenalvarezgonzalez/development/OwnAutoCare/OwnAutoCare/src/app/no-vehicles/no-vehicles.component.scss */
+.no-vehicles-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+}
+
+.no-vehicles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--ion-color-medium);
+}
+
+.no-vehicles ion-icon {
+  margin-bottom: 16px;
+  color: var(--ion-color-primary);
+}
+
+.no-vehicles p {
+  margin-bottom: 16px;
+  font-size: 1.2em;
+  color: var(--ion-color-dark);
+}
