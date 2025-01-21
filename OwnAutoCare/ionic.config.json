@@ -1,0 +1,7 @@
+{
+  "name": "OwnAutoCare",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
