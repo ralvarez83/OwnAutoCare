@@ -4,7 +4,7 @@
       <ion-icon [name]="getVehicleIcon(vehicle.type)" aria-hidden="true"></ion-icon>
       <ion-label>{{ vehicle.name }}</ion-label>
     </ion-tab-button>
-    <ion-tab-button  *ngIf="vehicles.length === 0" [tab]="'no-vehicles'">
+    <ion-tab-button  *ngIf="vehicles.length === 0" [tab]="'no-vehicles'" [selected]="true">
       <ion-icon name="alert-circle-outline"></ion-icon>
       <ion-label></ion-label>
     </ion-tab-button>

@@ -5,5 +5,13 @@
 </ion-header>
 
 <ion-content>
-  <p>Aquí puedes agregar las opciones de configuración.</p>
+  <div class="center-content">
+    <ng-container *ngIf="isAuthenticated; else notAuthenticated">
+      <app-google-sign-out></app-google-sign-out>
+    </ng-container>
+    <ng-template #notAuthenticated>
+
+      <app-google-sign-in></app-google-sign-in>
+    </ng-template>
+  </div>
 </ion-content>

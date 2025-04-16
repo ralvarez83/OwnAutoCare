@@ -19,6 +19,7 @@ import { addIcons } from 'ionicons';
 import { VehicleService } from '../../services/vehicle.service';
 import { Vehicle } from '../../models/Vehicle';
 import { VehicleTypes } from '../../models/VehicleTypes';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tabs',
@@ -29,7 +30,7 @@ import { VehicleTypes } from '../../models/VehicleTypes';
 export class TabsPage implements OnInit {
   vehicles: Vehicle[] = [];
 
-  constructor(private vehicleService: VehicleService) {
+  constructor(private vehicleService: VehicleService, private router: Router) {
     // Registrar los iconos
     addIcons({
       car: car,
@@ -43,6 +44,9 @@ export class TabsPage implements OnInit {
 
   ngOnInit() {
     this.vehicles = this.vehicleService.getVehicles();
+    if (this.vehicles.length === 0 && this.router.url !== '/settings') {
+      this.router.navigate(['/no-vehicles']);
+    }
   }
 
   getVehicleIcon(type: VehicleTypes): string {

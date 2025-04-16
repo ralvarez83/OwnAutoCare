@@ -4,6 +4,8 @@ import { NoVehiclesComponent } from '../../components/no-vehicles/no-vehicles.co
 
 import { VehicleDetailComponent } from '../../components/vehicle-detail/vehicle-detail.component';
 import { SettingsComponent } from '../settings/settings.component';
+import { VehicleGuard } from 'src/app/guards/vehicle.guard';
+import { AuthGuard } from 'src/app/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -14,6 +16,7 @@ export const routes: Routes = [
         path: 'vehicle/:id',
         component: VehicleDetailComponent,
         pathMatch: 'full',
+        canActivate: [VehicleGuard],
       },
       {
         path: 'settings',
@@ -22,6 +25,7 @@ export const routes: Routes = [
       {
         path: 'no-vehicles',
         component: NoVehiclesComponent,
+        canActivate: [AuthGuard],
       },
       // {
       //   path: 'tab1',
