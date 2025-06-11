@@ -1,14 +1,15 @@
+import React, { ReactNode } from 'react';
 import Layout from '@/components/Layout';
 import AuthProvider from '@/components/providers/AuthProvider';
-import { DataProvider } from '@/context/DataContext'; // Import DataProvider
-import './globals.css';
+import { DataProvider } from '@/context/DataContext';
+import './globals.css'; // Keep this for global styles
 
 export const metadata = {
   title: 'OwnAutoCare',
   description: 'Manage your vehicle maintenance',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang='en'>
       <head>
@@ -20,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body style={{ fontFamily: '"Space Grotesk", "Noto Sans", sans-serif' }}>
         <AuthProvider>
-          <DataProvider> {/* Wrap Layout with DataProvider */}
+          <DataProvider>
             <Layout>{children}</Layout>
           </DataProvider>
         </AuthProvider>
