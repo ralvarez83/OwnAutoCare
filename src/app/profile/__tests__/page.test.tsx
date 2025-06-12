@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event'; // For potential future interactions
-import ProfilePage from '../page'; // Now page.tsx
-import { useSession, signIn, signOut } from 'next-auth/react'; // signIn/signOut for potential mocking
+import userEvent from '@testing-library/user-event';
+import ProfilePage from '../page'; // page.tsx
+import { useSession, signIn, signOut } from 'next-auth/react';
 import { Session } from 'next-auth'; // Import Session type
 
 // Mock next-auth useSession and functions
@@ -13,51 +13,80 @@ jest.mock('next-auth/react', () => ({
   signOut: jest.fn(),
 }));
 
-const mockUseSession = useSession as jest.MockedFunction<typeof useSession>;
-// const mockSignIn = signIn as jest.MockedFunction<typeof signIn>;
-// const mockSignOut = signOut as jest.MockedFunction<typeof signOut>;
+const mockUseSessionHook = useSession as jest.MockedFunction<typeof useSession>;
+const mockSignIn = signIn as jest.MockedFunction<typeof signIn>;
+const mockSignOut = signOut as jest.MockedFunction<typeof signOut>;
 
 
 describe('ProfilePage', () => {
-  it('renders sign-in button when not authenticated', () => {
-    mockUseSession.mockReturnValue({ data: null, status: 'unauthenticated' });
-    render(<ProfilePage />);
-    expect(screen.getByText('Sign in with Google')).toBeInTheDocument();
+  beforeEach(() => {
+    // Reset mocks before each test
+    mockUseSessionHook.mockReset();
+    mockSignIn.mockReset();
+    mockSignOut.mockReset();
   });
 
-  it('renders user information and sign-out button when authenticated', () => {
-    const mockSessionData: Session = { // Use Session type
+  it('muestra el botón de inicio de sesión cuando el usuario no está autenticado', () => {
+    mockUseSessionHook.mockReturnValue({ data: null, status: 'unauthenticated' });
+    render(<ProfilePage />);
+    expect(screen.getByRole('button', { name: /Sign in with Google/i })).toBeInTheDocument();
+  });
+
+  it('muestra la información del usuario y el botón de cierre de sesión cuando está autenticado', () => {
+    const mockSessionData: Session = {
       user: { name: 'Test User', email: 'test@example.com', image: 'test-image.jpg' },
-      expires: '1', // expires is a required property
+      expires: '2099-01-01T00:00:00.000Z', // Provide a valid future date string
+      accessToken: 'mock-access-token' // Added accessToken as it's in our session type from previous steps
     };
-    mockUseSession.mockReturnValue({ data: mockSessionData, status: 'authenticated' });
+    mockUseSessionHook.mockReturnValue({ data: mockSessionData, status: 'authenticated' });
 
     render(<ProfilePage />);
 
-    expect(screen.getByText((content, element) => content.startsWith('Signed in as: Test User'))).toBeInTheDocument();
-    // More specific check for email if needed:
-    // expect(screen.getByText('(test@example.com)')).toBeInTheDocument();
+    // Verifica el nombre y el email. El uso de una función para `getByText` puede ser útil si el formato es complejo.
+    expect(screen.getByText((content, element) => {
+      return content.includes('Signed in as: Test User') && content.includes('(test@example.com)');
+    })).toBeInTheDocument();
 
     const userAvatar = screen.getByAltText('User avatar');
     expect(userAvatar).toBeInTheDocument();
     expect(userAvatar).toHaveAttribute('src', 'test-image.jpg');
 
-    expect(screen.getByText('Sign out')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Sign out/i })).toBeInTheDocument();
   });
 
-  it('calls signOut when sign-out button is clicked', async () => {
+  it('llama a signIn("google") cuando se hace clic en el botón de inicio de sesión', async () => {
     const user = userEvent.setup();
-    const mockSessionData: Session = {
-      user: { name: 'Test User', email: 'test@example.com' },
-      expires: '1',
-    };
-    mockUseSession.mockReturnValue({ data: mockSessionData, status: 'authenticated' });
+    mockUseSessionHook.mockReturnValue({ data: null, status: 'unauthenticated' });
 
     render(<ProfilePage />);
 
-    const signOutButton = screen.getByText('Sign out');
+    const signInButton = screen.getByRole('button', { name: /Sign in with Google/i });
+    await user.click(signInButton);
+
+    expect(mockSignIn).toHaveBeenCalledTimes(1);
+    expect(mockSignIn).toHaveBeenCalledWith('google');
+  });
+
+  it('llama a signOut cuando se hace clic en el botón de cierre de sesión', async () => {
+    const user = userEvent.setup();
+    const mockSessionData: Session = {
+      user: { name: 'Test User', email: 'test@example.com' },
+      expires: '2099-01-01T00:00:00.000Z',
+      accessToken: 'mock-access-token'
+    };
+    mockUseSessionHook.mockReturnValue({ data: mockSessionData, status: 'authenticated' });
+
+    render(<ProfilePage />);
+
+    const signOutButton = screen.getByRole('button', { name: /Sign out/i });
     await user.click(signOutButton);
 
-    expect(signOut).toHaveBeenCalled();
+    expect(mockSignOut).toHaveBeenCalledTimes(1);
+  });
+
+  it('muestra "Loading..." cuando el estado de la sesión es "loading"', () => {
+    mockUseSessionHook.mockReturnValue({ data: null, status: 'loading' });
+    render(<ProfilePage />);
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 });
