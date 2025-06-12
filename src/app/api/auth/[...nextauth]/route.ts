@@ -1,10 +1,6 @@
-import NextAuth, { type AuthOptions } from 'next-auth';
+import NextAuth, { type AuthOptions, Profile, Account, User } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
 import GoogleProvider from 'next-auth/providers/google';
-
-// Define a custom session type if needed to include accessToken
-// interface CustomSession extends Session {
-//   accessToken?: string;
-// }
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -20,21 +16,35 @@ export const authOptions: AuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account, profile }: { token: JWT; account?: Account | null; profile?: Profile | User | null }): Promise<JWT> {
+      // En el primer inicio de sesión, 'account' y 'profile' están disponibles.
       if (account && account.access_token) {
         token.accessToken = account.access_token;
       }
-      // token.idToken = account?.id_token; // Persist id_token if needed
+      if (profile) {
+        // 'profile' de Google contiene name, email, picture.
+        // Aseguramos que estos se añadan al token JWT.
+        token.name = profile.name;
+        token.email = profile.email;
+        // Google profile.picture, NextAuth session.user.image
+        // El tipo Profile de next-auth no siempre tiene 'picture', así que usamos una aserción de tipo o accedemos de forma segura.
+        token.picture = (profile as any).picture || (profile as any).image;
+      }
       return token;
     },
-    async session({ session, token }) {
-      // Pass accessToken to the session client-side
-      // Note: Default session type might not have accessToken.
-      // You might need to augment NextAuth.Session type or use a type assertion.
+    async session({ session, token }: { session: any; token: JWT }): Promise<any> {
+      // El token JWT (modificado arriba) se usa para construir el objeto de sesión.
+      // Pasamos el accessToken y la información del perfil del token a la sesión.
       if (token.accessToken) {
-        (session as any).accessToken = token.accessToken;
+        session.accessToken = token.accessToken as string;
       }
-      // (session as any).idToken = token.idToken; // Pass id_token if needed
+      // Aseguramos que session.user tenga la información del perfil del token.
+      // NextAuth v4 típicamente ya mapea name, email, image al session.user si están en el token.
+      // Esta es una confirmación explícita.
+      if (token.name) session.user.name = token.name;
+      if (token.email) session.user.email = token.email;
+      if (token.picture) session.user.image = token.picture as string;
+
       return session;
     },
   },
