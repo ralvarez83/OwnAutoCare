@@ -38,7 +38,7 @@ export default function AddVehiclePage() {
   return (
     <div className='p-4'>
       <h1 className='text-lg font-bold mb-4'>Add New Vehicle</h1>
-      <form onSubmit={handleSubmit} className='space-y-4'>
+      <form onSubmit={handleSubmit} className='space-y-4' noValidate>
         {/* Make, Model, Year, VIN, PhotoURL inputs from previous step... */}
         <div>
           <label htmlFor='make' className='block text-sm font-medium text-gray-700'>Make</label>

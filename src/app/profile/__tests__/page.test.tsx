@@ -43,9 +43,14 @@ describe('ProfilePage', () => {
     render(<ProfilePage />);
 
     // Verifica el nombre y el email. El uso de una función para `getByText` puede ser útil si el formato es complejo.
-    expect(screen.getByText((content, element) => {
-      return content.includes('Signed in as: Test User') && content.includes('(test@example.com)');
-    })).toBeInTheDocument();
+    const userInfoElement = screen.getByText((content, node) => {
+      const nodeText = node?.textContent || '';
+      const hasName = nodeText.includes('Test User');
+      const hasEmail = nodeText.includes('test@example.com');
+      const hasPrefix = nodeText.includes('Signed in as:');
+      return hasName && hasEmail && hasPrefix;
+    });
+    expect(userInfoElement).toBeInTheDocument();
 
     const userAvatar = screen.getByAltText('User avatar');
     expect(userAvatar).toBeInTheDocument();
@@ -87,6 +92,6 @@ describe('ProfilePage', () => {
   it('muestra "Loading..." cuando el estado de la sesión es "loading"', () => {
     mockUseSessionHook.mockReturnValue({ data: null, status: 'loading' });
     render(<ProfilePage />);
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('Loading session...')).toBeInTheDocument();
   });
 });

@@ -53,9 +53,9 @@ describe('DataContext', () => {
 
   it('loads initial data from Drive (file not found, starts empty)', async () => {
     mockFetch.mockResolvedValueOnce({
-      ok: true,
+      ok: false, // Correct for a 404 response
       status: 404,
-      json: async () => ({}) as Promise<Partial<AppData>>,
+      json: async () => ({ message: 'Not Found' }) // Or an empty object if that's what your API might return as JSON for a 404
     });
     render(<TestConsumerComponent />, { wrapper: AllTheProviders });
 
