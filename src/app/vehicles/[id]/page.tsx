@@ -170,8 +170,8 @@ export default function VehicleDetailsPage() {
                   .sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // most recent first
 
                 let oilAlert = null;
-                if (vehicle.oilChangeMileageInterval && vehicle.currentMileage) {
-                  const lastOilChangeKm = oilChangeRecords.length > 0 ? oilChangeRecords[0].kilometers : 0; // Assume 0 if no record
+                if (vehicle && vehicle.oilChangeMileageInterval && vehicle.currentMileage) { // Added vehicle check for safety
+                  const lastOilChangeKm = oilChangeRecords.length > 0 ? oilChangeRecords[0].kilometers : 0;
                   const nextOilChangeDueKm = lastOilChangeKm + vehicle.oilChangeMileageInterval;
                   const kmUntilNextOilChange = nextOilChangeDueKm - vehicle.currentMileage;
 
