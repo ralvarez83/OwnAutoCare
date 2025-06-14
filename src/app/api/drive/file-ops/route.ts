@@ -49,7 +49,8 @@ export async function GET(request) { // LOAD DATA
 export async function POST(request) { // SAVE DATA
   try {
     const drive = await getDriveService();
-    const data = await request.json(); // Data to save
+    const dataToSave = await request.json(); // Data to save
+    console.log('Data to save (from request.json()):', JSON.stringify(dataToSave)); // DEBUG
 
     const fileMetadata = {
       name: APP_DATA_FILE_NAME,
@@ -57,7 +58,7 @@ export async function POST(request) { // SAVE DATA
     };
     const media = {
       mimeType: 'application/json',
-      body: JSON.stringify(data),
+      body: JSON.stringify(dataToSave),
     };
 
     const existingFile = await findFile(drive);
@@ -65,19 +66,24 @@ export async function POST(request) { // SAVE DATA
     let file;
     if (existingFile) {
       // Update existing file
+      // console.log('--- About to call drive.files.update. drive.files.update is mock:', typeof drive.files.update.getMockName === 'function'); // DEBUG
       file = await drive.files.update({
         fileId: existingFile.id,
         media: media,
         fields: 'id,name',
       });
+      // console.log('--- drive.files.update result in route:', JSON.stringify(file)); // DEBUG
     } else {
       // Create new file
+      // console.log('--- About to call drive.files.create. drive.files.create is mock:', typeof drive.files.create.getMockName === 'function'); // DEBUG
       file = await drive.files.create({
         resource: fileMetadata,
         media: media,
         fields: 'id,name',
       });
+      // console.log('--- drive.files.create result in route:', JSON.stringify(file)); // DEBUG
     }
+    // console.log('--- final file object before return:', JSON.stringify(file)); // DEBUG
     return NextResponse.json({ message: 'Data saved successfully to Google Drive.', fileId: file.data.id, fileName: file.data.name });
   } catch (error) {
     console.error('POST /api/drive/file-ops Error:', error.message);
