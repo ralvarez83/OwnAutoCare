@@ -48,7 +48,11 @@ describe('ProfilePage', () => {
       const hasName = nodeText.includes('Test User');
       const hasEmail = nodeText.includes('test@example.com');
       const hasPrefix = nodeText.includes('Signed in as:');
-      return hasName && hasEmail && hasPrefix;
+      // Asegurarse de que el nodo sea un elemento P y contenga el texto
+      if (node && node.tagName === 'P') {
+        return hasName && hasEmail && hasPrefix;
+      }
+      return false;
     });
     expect(userInfoElement).toBeInTheDocument();
 
