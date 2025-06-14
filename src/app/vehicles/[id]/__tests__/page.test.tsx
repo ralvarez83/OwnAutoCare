@@ -54,22 +54,19 @@ describe('VehicleDetailsPage - Maintenance Alerts', () => {
 
     render(<VehicleDetailsPage />);
     await waitFor(() => {
-      // Intentar encontrar el div contenedor de las alertas.
-      // Asumimos que el título "Maintenance Alerts" está presente y es único en esta sección.
-      const alertTitleElement = screen.queryByText('Maintenance Alerts');
-      if (alertTitleElement) {
-        const alertContainer = alertTitleElement.parentElement; // El div padre
-        if (alertContainer) {
-          console.log("Debug DOM (Overdue) - Alert Container HTML:", alertContainer.innerHTML);
-        } else {
-          console.log("Debug DOM (Overdue) - Alert container's parentElement no encontrado.");
+      const expectedTextParts = [
+        "Oil Change Overdue:",
+        "Next service was due at 45000 km",
+        "(currently at 46000 km)"
+      ];
+      const alertElement = screen.getByText((content, node) => {
+        if (node && node.tagName === 'P') {
+          const nodeText = node.textContent || "";
+          return expectedTextParts.every(part => nodeText.includes(part));
         }
-      } else {
-        console.log("Debug DOM (Overdue) - Título 'Maintenance Alerts' no encontrado.");
-      }
-
-      // Usar la regex original que debería coincidir según los logs
-      expect(screen.getByText(/Oil Change Overdue:.*Next service was due at 45000 km.*\(currently at 46000 km\)/i)).toBeInTheDocument();
+        return false;
+      });
+      expect(alertElement).toBeInTheDocument();
     });
   });
 
@@ -84,22 +81,19 @@ describe('VehicleDetailsPage - Maintenance Alerts', () => {
 
     render(<VehicleDetailsPage />);
     await waitFor(() => {
-      const alertTitleElement = screen.queryByText('Maintenance Alerts');
-      if (alertTitleElement) {
-        const alertContainer = alertTitleElement.parentElement;
-        if (alertContainer) {
-          console.log("Debug DOM (Upcoming) - Alert Container HTML:", alertContainer.innerHTML);
-        } else {
-          console.log("Debug DOM (Upcoming) - Alert container's parentElement no encontrado.");
+      const expectedTextParts = [
+        "Oil Change Upcoming:",
+        "Next service due in 500 km",
+        "(at 45000 km)"
+      ];
+      const alertElement = screen.getByText((content, node) => {
+        if (node && node.tagName === 'P') {
+          const nodeText = node.textContent || "";
+          return expectedTextParts.every(part => nodeText.includes(part));
         }
-      } else {
-        console.log("Debug DOM (Upcoming) - Título 'Maintenance Alerts' no encontrado.");
-      }
-
-      // Regex original para esta prueba
-      expect(screen.getByText(/Oil Change Upcoming:.*Next service due in 500 km/i)).toBeInTheDocument();
-      // Si la anterior pasa, también verificamos la segunda parte del mensaje original
-      expect(screen.getByText(/at 45000 km/i)).toBeInTheDocument();
+        return false;
+      });
+      expect(alertElement).toBeInTheDocument();
     });
   });
 
@@ -114,7 +108,19 @@ describe('VehicleDetailsPage - Maintenance Alerts', () => {
 
     render(<VehicleDetailsPage />);
     await waitFor(() => {
-        expect(screen.getByText(/Oil change not due soon. Next at 45000 km/i)).toBeInTheDocument();
+      const expectedTextParts = [
+        "Oil change not due soon.",
+        "Next at 45000 km"
+      ];
+      const alertElement = screen.getByText((content, node) => {
+        if (node && node.tagName === 'P') {
+          const nodeText = node.textContent || "";
+          // Para esta alerta, el texto es más simple y directo.
+          return expectedTextParts.every(part => nodeText.includes(part));
+        }
+        return false;
+      });
+      expect(alertElement).toBeInTheDocument();
     });
   });
 
