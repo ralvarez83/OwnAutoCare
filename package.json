@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
@@ -27,9 +27,11 @@
   "homepage": "https://github.com/ralvarez83/OwnAutoCare#readme",
   "dependencies": {
     "@auth/core": "^0.34.2",
+    "@google-cloud/local-auth": "^3.0.1",
     "@types/node": "^24.0.1",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "googleapis": "^150.0.1",
     "next": "^15.3.3",
     "next-auth": "^4.24.11",
     "react": "^19.1.0",
@@ -37,15 +39,22 @@
     "typescript": "^5.8.3"
   },
   "devDependencies": {
+    "@tailwindcss/postcss7-compat": "^2.2.17",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@types/jest": "^29.5.14",
+    "autoprefixer": "^10.4.21",
+    "dotenv": "^16.4.5",
     "eslint": "^9.29.0",
     "eslint-config-next": "^15.3.3",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.1",
     "jest": "^30.0.0",
     "jest-environment-jsdom": "^30.0.0",
-    "prettier": "^3.5.3"
+    "postcss": "^8.5.6",
+    "prettier": "^3.5.3",
+    "tailwindcss": "^4.1.10",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2"
   }
 }

@@ -136,3 +136,7 @@ dist
 .pnp.*
 
 .early.coverage
+
+# Google Drive credentials
+credentials.json
+token.json
