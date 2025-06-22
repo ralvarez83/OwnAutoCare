@@ -9,9 +9,13 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:unit": "jest --testPathPatterns=unit",
+    "test:integration": "jest --testPathPatterns=integration",
+    "test:e2e": "jest --testPathPatterns=e2e",
+    "test:api": "jest --testPathPatterns=api"
   },
   "repository": {
     "type": "git",
@@ -28,6 +32,7 @@
   "dependencies": {
     "@auth/core": "^0.34.2",
     "@google-cloud/local-auth": "^3.0.1",
+    "@hookform/resolvers": "^5.1.1",
     "@types/node": "^24.0.1",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
@@ -36,12 +41,15 @@
     "next-auth": "^4.24.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "typescript": "^5.8.3"
+    "react-hook-form": "^7.58.1",
+    "typescript": "^5.8.3",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@tailwindcss/postcss7-compat": "^2.2.17",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^29.5.14",
     "autoprefixer": "^10.4.21",
     "dotenv": "^16.4.5",
@@ -49,10 +57,11 @@
     "eslint-config-next": "^15.3.3",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.1",
-    "jest": "^30.0.0",
-    "jest-environment-jsdom": "^30.0.0",
+    "jest": "^30.0.2",
+    "jest-environment-jsdom": "^30.0.2",
     "postcss": "^8.5.6",
     "prettier": "^3.5.3",
+    "supertest": "^7.1.1",
     "tailwindcss": "^4.1.10",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2"

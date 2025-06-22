@@ -1,8 +1,83 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Vehicle, CreateVehicleData } from '@/types/vehicle';
 import { Button } from './Button';
+
+// Esquema de validación declarativo con Zod
+const vehicleFormSchema = z.object({
+  marca: z
+    .string()
+    .min(1, 'La marca es obligatoria')
+    .min(2, 'La marca debe tener al menos 2 caracteres')
+    .max(50, 'La marca no puede exceder 50 caracteres')
+    .trim(),
+
+  modelo: z
+    .string()
+    .min(1, 'El modelo es obligatorio')
+    .min(2, 'El modelo debe tener al menos 2 caracteres')
+    .max(50, 'El modelo no puede exceder 50 caracteres')
+    .trim(),
+
+  kms: z
+    .preprocess((v) => v === '' ? undefined : v, z
+      .number({ invalid_type_error: 'El kilometraje debe ser un número' })
+      .min(0, 'Los kilómetros no pueden ser negativos')
+      .max(999999, 'El kilometraje no puede exceder 999,999 km')
+    ).optional(),
+
+  kmsCambioAceite: z
+    .preprocess((v) => v === '' ? undefined : v, z
+      .number({ invalid_type_error: 'Los kilómetros para cambio de aceite deben ser un número' })
+      .min(1, 'Los kilómetros para cambio de aceite deben ser mayores a 0')
+      .max(50000, 'Los kilómetros para cambio de aceite no pueden exceder 50,000 km')
+    ).optional(),
+
+  tipoAceite: z
+    .string()
+    .trim()
+    .optional()
+    .refine(
+      (val) => !val || /^[0-9]+W-[0-9]+$/.test(val),
+      { message: 'Formato inválido. Use formato como: 5W-30, 10W-40' }
+    ),
+
+  tipoDistribucion: z.enum(['cadena', 'correa']).optional(),
+
+  kmsCambioCorrea: z
+    .preprocess((v) => v === '' ? undefined : v, z
+      .number({ invalid_type_error: 'Los kilómetros para cambio de correa deben ser un número' })
+      .min(1, 'Los kilómetros para cambio de correa deben ser mayores a 0')
+      .max(200000, 'Los kilómetros para cambio de correa no pueden exceder 200,000 km')
+    ).optional(),
+}).refine((data) => {
+  // Si tipoDistribucion es correa, kmsCambioCorrea debe estar presente y ser válido
+  if (data.tipoDistribucion === 'correa') {
+    return data.kmsCambioCorrea !== undefined && data.kmsCambioCorrea > 0;
+  }
+  return true;
+}, {
+  message: 'Los kilómetros para cambio de correa son obligatorios cuando el tipo de distribución es correa',
+  path: ['kmsCambioCorrea']
+}).refine((data) => {
+  // Si ambos están presentes, kmsCambioAceite debe ser menor que kmsCambioCorrea
+  if (
+    data.tipoDistribucion === 'correa' &&
+    data.kmsCambioCorrea !== undefined &&
+    data.kmsCambioAceite !== undefined
+  ) {
+    return data.kmsCambioAceite < data.kmsCambioCorrea;
+  }
+  return true;
+}, {
+  message: 'Los kilómetros para cambio de aceite deben ser menores que los kilómetros para cambio de correa',
+  path: ['kmsCambioAceite']
+});
+
+type VehicleFormData = z.infer<typeof vehicleFormSchema>;
 
 interface VehicleFormProps {
   vehicle?: Vehicle;
@@ -12,95 +87,39 @@ interface VehicleFormProps {
 }
 
 export function VehicleForm({ vehicle, onSubmit, onCancel, loading = false }: VehicleFormProps) {
-  const [formData, setFormData] = useState<CreateVehicleData>({
-    marca: '',
-    modelo: '',
-    kms: 0,
-    kmsCambioAceite: 0,
-    tipoAceite: '',
-    tipoDistribucion: 'cadena',
-    kmsCambioCorrea: undefined,
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+    reset
+  } = useForm<VehicleFormData>({
+    resolver: zodResolver(vehicleFormSchema),
+    defaultValues: {
+      marca: vehicle?.marca || '',
+      modelo: vehicle?.modelo || '',
+      kms: vehicle?.kms || 0,
+      kmsCambioAceite: vehicle?.kmsCambioAceite || 5000,
+      tipoAceite: vehicle?.tipoAceite || '',
+      tipoDistribucion: vehicle?.tipoDistribucion || 'cadena',
+      kmsCambioCorrea: vehicle?.kmsCambioCorrea || undefined,
+    },
+    mode: 'onChange' // Validación en tiempo real
   });
 
-  const [errors, setErrors] = useState<Partial<Record<keyof CreateVehicleData, string>>>({});
+  const tipoDistribucion = watch('tipoDistribucion');
 
-  useEffect(() => {
-    if (vehicle) {
-      setFormData({
-        marca: vehicle.marca,
-        modelo: vehicle.modelo,
-        kms: vehicle.kms,
-        kmsCambioAceite: vehicle.kmsCambioAceite,
-        tipoAceite: vehicle.tipoAceite,
-        tipoDistribucion: vehicle.tipoDistribucion,
-        kmsCambioCorrea: vehicle.kmsCambioCorrea,
-      });
-    }
-  }, [vehicle]);
-
-  const validateForm = (): boolean => {
-    const newErrors: Partial<Record<keyof CreateVehicleData, string>> = {};
-
-    if (!formData.marca.trim()) {
-      newErrors.marca = 'La marca es obligatoria';
-    }
-
-    if (!formData.modelo.trim()) {
-      newErrors.modelo = 'El modelo es obligatorio';
-    }
-
-    if (formData.kms < 0) {
-      newErrors.kms = 'Los kilómetros no pueden ser negativos';
-    }
-
-    if (formData.kmsCambioAceite <= 0) {
-      newErrors.kmsCambioAceite = 'Los kilómetros para cambio de aceite deben ser mayores a 0';
-    }
-
-    if (!formData.tipoAceite.trim()) {
-      newErrors.tipoAceite = 'El tipo de aceite es obligatorio';
-    }
-
-    if (
-      formData.tipoDistribucion === 'correa' &&
-      (!formData.kmsCambioCorrea || formData.kmsCambioCorrea <= 0)
-    ) {
-      newErrors.kmsCambioCorrea = 'Los kilómetros para cambio de correa son obligatorios';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (validateForm()) {
-      const submitData = { ...formData };
-      if (submitData.tipoDistribucion === 'cadena') {
-        delete submitData.kmsCambioCorrea;
-      }
-      onSubmit(submitData);
-    }
-  };
-
-  const handleInputChange = (field: keyof CreateVehicleData, value: string | number) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value,
-    }));
-
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: undefined,
-      }));
-    }
+  const onSubmitForm = (data: VehicleFormData) => {
+    const submitData: CreateVehicleData = {
+      ...data,
+      // Solo incluir kmsCambioCorrea si es correa
+      kmsCambioCorrea: data.tipoDistribucion === 'correa' ? data.kmsCambioCorrea : undefined
+    };
+    onSubmit(submitData);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Marca */}
         <div>
@@ -110,14 +129,15 @@ export function VehicleForm({ vehicle, onSubmit, onCancel, loading = false }: Ve
           <input
             type="text"
             id="marca"
-            value={formData.marca}
-            onChange={e => handleInputChange('marca', e.target.value)}
+            {...register('marca')}
             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               errors.marca ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="Ej: Toyota, Ford, BMW..."
           />
-          {errors.marca && <p className="mt-1 text-sm text-red-600">{errors.marca}</p>}
+          {errors.marca && (
+            <p className="mt-1 text-sm text-red-600">{errors.marca.message}</p>
+          )}
         </div>
 
         {/* Modelo */}
@@ -128,14 +148,15 @@ export function VehicleForm({ vehicle, onSubmit, onCancel, loading = false }: Ve
           <input
             type="text"
             id="modelo"
-            value={formData.modelo}
-            onChange={e => handleInputChange('modelo', e.target.value)}
+            {...register('modelo')}
             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               errors.modelo ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="Ej: Corolla, Focus, X3..."
           />
-          {errors.modelo && <p className="mt-1 text-sm text-red-600">{errors.modelo}</p>}
+          {errors.modelo && (
+            <p className="mt-1 text-sm text-red-600">{errors.modelo.message}</p>
+          )}
         </div>
 
         {/* Kilometraje */}
@@ -146,15 +167,16 @@ export function VehicleForm({ vehicle, onSubmit, onCancel, loading = false }: Ve
           <input
             type="number"
             id="kms"
-            value={formData.kms}
-            onChange={e => handleInputChange('kms', parseInt(e.target.value) || 0)}
+            {...register('kms', { valueAsNumber: true })}
             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               errors.kms ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="0"
             min="0"
           />
-          {errors.kms && <p className="mt-1 text-sm text-red-600">{errors.kms}</p>}
+          {errors.kms && (
+            <p className="mt-1 text-sm text-red-600">{errors.kms.message}</p>
+          )}
         </div>
 
         {/* Kilómetros para cambio de aceite */}
@@ -165,8 +187,7 @@ export function VehicleForm({ vehicle, onSubmit, onCancel, loading = false }: Ve
           <input
             type="number"
             id="kmsCambioAceite"
-            value={formData.kmsCambioAceite}
-            onChange={e => handleInputChange('kmsCambioAceite', parseInt(e.target.value) || 0)}
+            {...register('kmsCambioAceite', { valueAsNumber: true })}
             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               errors.kmsCambioAceite ? 'border-red-500' : 'border-gray-300'
             }`}
@@ -174,7 +195,7 @@ export function VehicleForm({ vehicle, onSubmit, onCancel, loading = false }: Ve
             min="1"
           />
           {errors.kmsCambioAceite && (
-            <p className="mt-1 text-sm text-red-600">{errors.kmsCambioAceite}</p>
+            <p className="mt-1 text-sm text-red-600">{errors.kmsCambioAceite.message}</p>
           )}
         </div>
 
@@ -186,14 +207,15 @@ export function VehicleForm({ vehicle, onSubmit, onCancel, loading = false }: Ve
           <input
             type="text"
             id="tipoAceite"
-            value={formData.tipoAceite}
-            onChange={e => handleInputChange('tipoAceite', e.target.value)}
+            {...register('tipoAceite')}
             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               errors.tipoAceite ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="Ej: 5W-30, 10W-40..."
           />
-          {errors.tipoAceite && <p className="mt-1 text-sm text-red-600">{errors.tipoAceite}</p>}
+          {errors.tipoAceite && (
+            <p className="mt-1 text-sm text-red-600">{errors.tipoAceite.message}</p>
+          )}
         </div>
 
         {/* Tipo de distribución */}
@@ -206,20 +228,20 @@ export function VehicleForm({ vehicle, onSubmit, onCancel, loading = false }: Ve
           </label>
           <select
             id="tipoDistribucion"
-            value={formData.tipoDistribucion}
-            onChange={e =>
-              handleInputChange('tipoDistribucion', e.target.value as 'correa' | 'cadena')
-            }
+            {...register('tipoDistribucion')}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="cadena">Cadena</option>
             <option value="correa">Correa</option>
           </select>
+          {errors.tipoDistribucion && (
+            <p className="mt-1 text-sm text-red-600">{errors.tipoDistribucion.message}</p>
+          )}
         </div>
       </div>
 
       {/* Kilómetros para cambio de correa (solo si es correa) */}
-      {formData.tipoDistribucion === 'correa' && (
+      {tipoDistribucion === 'correa' && (
         <div>
           <label htmlFor="kmsCambioCorrea" className="block text-sm font-medium text-gray-700 mb-2">
             Kms para cambio de correa *
@@ -227,8 +249,7 @@ export function VehicleForm({ vehicle, onSubmit, onCancel, loading = false }: Ve
           <input
             type="number"
             id="kmsCambioCorrea"
-            value={formData.kmsCambioCorrea || ''}
-            onChange={e => handleInputChange('kmsCambioCorrea', parseInt(e.target.value) || 0)}
+            {...register('kmsCambioCorrea', { valueAsNumber: true })}
             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               errors.kmsCambioCorrea ? 'border-red-500' : 'border-gray-300'
             }`}
@@ -236,18 +257,31 @@ export function VehicleForm({ vehicle, onSubmit, onCancel, loading = false }: Ve
             min="1"
           />
           {errors.kmsCambioCorrea && (
-            <p className="mt-1 text-sm text-red-600">{errors.kmsCambioCorrea}</p>
+            <p className="mt-1 text-sm text-red-600">{errors.kmsCambioCorrea.message}</p>
           )}
         </div>
       )}
 
       {/* Botones */}
       <div className="flex justify-end space-x-4 pt-6">
-        <Button type="button" variant="secondary" onClick={onCancel} disabled={loading}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onCancel}
+          disabled={loading || isSubmitting}
+        >
           Cancelar
         </Button>
-        <Button type="submit" disabled={loading}>
-          {loading ? 'Guardando...' : vehicle ? 'Actualizar Vehículo' : 'Crear Vehículo'}
+        <Button
+          type="submit"
+          disabled={loading || isSubmitting}
+        >
+          {loading || isSubmitting
+            ? 'Guardando...'
+            : vehicle
+              ? 'Actualizar Vehículo'
+              : 'Crear Vehículo'
+          }
         </Button>
       </div>
     </form>
