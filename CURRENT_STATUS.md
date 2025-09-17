@@ -1,9 +1,9 @@
 # 📊 ESTADO ACTUAL DEL PROYECTO
 
 > **PARA AGENTES**: Este archivo te dice exactamente dónde está el proyecto AHORA  
-> **Fecha actualización**: 2025-09-06  
-> **Fase**: Core del dominio implementado
-> **Agente anterior**: Gemini (completó tarea #2)  
+> **Fecha actualización**: 2025-09-13  
+> **Fase**: Interfaz básica (MVP) implementada
+> **Agente anterior**: Gemini (completó tarea #4)  
 > **Contexto**: App multiplataforma Flutter para registrar mantenimiento de coches
 
 ## ✅ Lo que YA está hecho
@@ -12,15 +12,17 @@
 - [x] **Proyecto Flutter inicializado** ✅
 - [x] **Clean Architecture implementada** ✅
 - [x] **Estructura Domain implementada** ✅
-- [ ] Autenticación OAuth (Google Drive)
-- [ ] Interfaz básica de usuario
+- [x] **Autenticación OAuth (Google Drive)** ✅
+- [x] **Interfaz básica de usuario (MVP)** ✅
 
 ## 🎯 Funcionalidades completadas
 - **✅ Tarea #1**: Proyecto Flutter base completamente funcional
 - **✅ Tarea #2**: Implementada estructura Domain (entidades, value objects, interfaces)
+- **✅ Tarea #3**: Autenticación Google Drive OAuth
+- **✅ Tarea #4**: Interfaz básica (MVP)
 
 ## 🚧 En qué estamos trabajando ahora
-- **Próxima tarea**: Tarea #3 - Autenticación Google Drive OAuth
+- **Próxima tarea**: Tarea #5 - Migrar a `renderButton` de Google Sign-In
 
 ## 🔧 Stack técnico confirmado
 - **Framework**: Flutter/Dart
@@ -30,10 +32,10 @@
 - **Target**: Android, iOS, Web, Desktop
 
 ## 📱 Estado de la app
-**NO EXISTE AÚN** - necesita inicialización
+**MVP funcional** - La navegación y las pantallas básicas están implementadas.
 
 ## ⚠️ Problemas conocidos
-- Ninguno aún
+- El método `signIn()` de `google_sign_in` está obsoleto en la web y causa errores.
 
 ## 💡 Decisiones pendientes del Product Owner
 1. ¿Empezar con Google Drive o OneDrive?

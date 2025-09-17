@@ -38,8 +38,10 @@ dependencies:
   http: ^1.1.0
   
   # OAuth & Authentication  
-  oauth2: ^2.0.2
-  url_launcher: ^6.1.14
+  google_sign_in: ^6.2.1
+  google_sign_in_web: ^0.12.4
+  googleapis_auth: ^1.4.1
+  googleapis: ^13.2.0
   
   # State Management & Architecture
   equatable: ^2.0.5

@@ -27,9 +27,7 @@
 **RESULTADO ESPERADO**: Core del dominio funcionando con tests verdes
 **DEMO**: `flutter test` debe pasar todos los tests del dominio
 
-## 🥈 PRIORIDAD MEDIA (Siguientes sesiones)
-
-### 3. **Autenticación Google Drive OAuth**
+### 3. **Autenticación Google Drive OAuth** ✅ **COMPLETADA**
 **CONTEXTO**: Conectar con Google Drive para almacenamiento
 **PASOS ESPECÍFICOS**:
 - Configurar OAuth PKCE en Google Cloud Console
@@ -39,7 +37,9 @@
 **RESULTADO ESPERADO**: App conecta con Google Drive
 **DEMO**: Login funcional que accede a carpeta `/Apps/OwnAutoCare/`
 
-### 4. **Interfaz básica (MVP)**
+## 🥈 PRIORIDAD MEDIA (Siguientes sesiones)
+
+### 4. **Interfaz básica (MVP)** ✅ **COMPLETADA**
 **CONTEXTO**: UI mínima pero funcional
 **PASOS ESPECÍFICOS**:
 - Pantalla de bienvenida/login
@@ -49,7 +49,16 @@
 **RESULTADO ESPERADO**: UI mínima pero funcional
 **DEMO**: Navegación completa entre pantallas
 
-### 5. **CRUD de vehículos**
+### 5. **Migrar a `renderButton` de Google Sign-In**
+**CONTEXTO**: El método `signIn()` está obsoleto en la web.
+**PASOS ESPECÍFICOS**:
+- Investigar el error de compilación `Method not found: 'renderButton'`.
+- Refactorizar la UI para usar el widget `renderButton` de `google_sign_in_web`.
+- Asegurar que el flujo de autenticación siga funcionando correctamente.
+**RESULTADO ESPERADO**: Eliminada la advertencia de obsolescencia y la autenticación funciona con el nuevo método.
+**DEMO**: Login funcional en la web sin advertencias.
+
+### 6. **CRUD de vehículos**
 **CONTEXTO**: Gestión completa de vehículos del usuario
 **PASOS ESPECÍFICOS**:
 - Implementar casos de uso: CreateVehicle, ListVehicles, UpdateVehicle
@@ -60,9 +69,9 @@
 
 ## 🥉 PRIORIDAD BAJA (Futuro)
 
-### 6. **Registros de mantenimiento**
-### 7. **Recordatorios**
-### 8. **Exportación/importación**
+### 7. **Registros de mantenimiento**
+### 8. **Recordatorios**
+### 9. **Exportación/importación**
 
 ---
 
