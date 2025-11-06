@@ -37,28 +37,28 @@
 **RESULTADO ESPERADO**: App conecta con Google Drive
 **DEMO**: Login funcional que accede a carpeta `/Apps/OwnAutoCare/`
 
+### 5. **Mejora de la capacidad de respuesta de la interfaz de usuario** ✅ **COMPLETADA**
+**CONTEXTO**: Mejorar la capacidad de respuesta de la aplicación a las interacciones del usuario.
+**PASOS ESPECÍFICOS**:
+- Añadido un `LoadingOverlay` para proporcionar feedback visual durante operaciones asíncronas.
+- Deshabilitados los botones durante las operaciones asíncronas para evitar múltiples clics.
+- Solucionados los problemas que impedían que la aplicación web se cargara correctamente.
+- Corregido el error `unregistered_view_type` en la versión web relacionado con el botón de Google Sign-In.
+**RESULTADO ESPERADO**: La aplicación se siente más rápida y receptiva.
+**DEMO**: La aplicación web se carga correctamente y muestra indicadores de carga durante las operaciones asíncronas.
+
 ## 🥈 PRIORIDAD MEDIA (Siguientes sesiones)
 
-### 4. **Interfaz básica (MVP)** ✅ **COMPLETADA**
-**CONTEXTO**: UI mínima pero funcional
+### 6. **Implementar logout** 
+**CONTEXTO**: Permitir al usuario cerrar sesión.
 **PASOS ESPECÍFICOS**:
-- Pantalla de bienvenida/login
-- Lista de vehículos (vacía inicialmente)
-- Formulario "Añadir vehículo"
-- Navegación básica
-**RESULTADO ESPERADO**: UI mínima pero funcional
-**DEMO**: Navegación completa entre pantallas
+- Añadir botón de logout en la pantalla de listado de vehículos.
+- Implementar el método de logout en `GoogleDriveProvider`.
+- Navegar a la pantalla de bienvenida después del logout.
+**RESULTADO ESPERADO**: El usuario puede cerrar sesión y volver a la pantalla de bienvenida.
+**DEMO**: Logout funcional.
 
-### 5. **Migrar a `renderButton` de Google Sign-In**
-**CONTEXTO**: El método `signIn()` está obsoleto en la web.
-**PASOS ESPECÍFICOS**:
-- Investigar el error de compilación `Method not found: 'renderButton'`.
-- Refactorizar la UI para usar el widget `renderButton` de `google_sign_in_web`.
-- Asegurar que el flujo de autenticación siga funcionando correctamente.
-**RESULTADO ESPERADO**: Eliminada la advertencia de obsolescencia y la autenticación funciona con el nuevo método.
-**DEMO**: Login funcional en la web sin advertencias.
-
-### 6. **CRUD de vehículos**
+### 7. **CRUD de vehículos**
 **CONTEXTO**: Gestión completa de vehículos del usuario
 **PASOS ESPECÍFICOS**:
 - Implementar casos de uso: CreateVehicle, ListVehicles, UpdateVehicle

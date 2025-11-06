@@ -1,43 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:own_auto_care/application/use_cases/create_vehicle.dart';
+import 'package:own_auto_care/application/use_cases/update_vehicle.dart';
 import 'package:own_auto_care/domain/entities/vehicle.dart';
 import 'package:own_auto_care/domain/repositories/vehicle_repository.dart';
-import 'package:own_auto_care/domain/value_objects/vehicle_id.dart';
-import 'package:uuid/uuid.dart';
 import 'package:own_auto_care/presentation/widgets/loading_overlay.dart';
 
-class AddVehicleScreen extends StatefulWidget {
+class EditVehicleScreen extends StatefulWidget {
   final VehicleRepository vehicleRepository;
+  final Vehicle vehicle;
 
-  const AddVehicleScreen({super.key, required this.vehicleRepository});
+  const EditVehicleScreen({
+    super.key, 
+    required this.vehicleRepository, 
+    required this.vehicle
+  });
 
   @override
-  State<AddVehicleScreen> createState() => _AddVehicleScreenState();
+  State<EditVehicleScreen> createState() => _EditVehicleScreenState();
 }
 
-class _AddVehicleScreenState extends State<AddVehicleScreen> {
+class _EditVehicleScreenState extends State<EditVehicleScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  String _vehicleName = '';
-  String _make = '';
-  String _model = '';
-  int _year = 0;
+  
+  late String _vehicleName;
+  late String _make;
+  late String _model;
+  late int _year;
+
+  @override
+  void initState() {
+    super.initState();
+    _vehicleName = widget.vehicle.name;
+    _make = widget.vehicle.make;
+    _model = widget.vehicle.model;
+    _year = widget.vehicle.year;
+  }
+
+  Future<void> _saveVehicle() async {
+    if (!_formKey.currentState!.validate()) return;
+    
+    _formKey.currentState!.save();
+    setState(() => _isLoading = true);
+    
+    try {
+      final updatedVehicle = widget.vehicle.copyWith(
+        name: _vehicleName,
+        make: _make,
+        model: _model,
+        year: _year,
+      );
+
+      final updateVehicle = UpdateVehicle(widget.vehicleRepository);
+      await updateVehicle(updatedVehicle);
+
+      if (!mounted) return;
+      Navigator.of(context).pop(updatedVehicle);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error updating vehicle: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Vehicle'),
+        title: const Text('Edit Vehicle'),
       ),
       body: LoadingOverlay(
         isLoading: _isLoading,
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextFormField(
+                  initialValue: _vehicleName,
                   decoration: const InputDecoration(
                     labelText: 'Vehicle Name',
                   ),
@@ -47,11 +93,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    _vehicleName = value!;
-                  },
+                  onSaved: (value) => _vehicleName = value!,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
+                  initialValue: _make,
                   decoration: const InputDecoration(
                     labelText: 'Make',
                   ),
@@ -61,11 +107,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    _make = value!;
-                  },
+                  onSaved: (value) => _make = value!,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
+                  initialValue: _model,
                   decoration: const InputDecoration(
                     labelText: 'Model',
                   ),
@@ -75,11 +121,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    _model = value!;
-                  },
+                  onSaved: (value) => _model = value!,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
+                  initialValue: _year.toString(),
                   decoration: const InputDecoration(
                     labelText: 'Year',
                   ),
@@ -90,36 +136,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    _year = int.parse(value!);
-                  },
+                  onSaved: (value) => _year = int.parse(value!),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: _isLoading ? null : () async {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
-                      setState(() => _isLoading = true);
-                      try {
-                        final createVehicle = CreateVehicle(widget.vehicleRepository);
-                        await createVehicle(Vehicle(id: VehicleId(const Uuid().v4()), name: _vehicleName, make: _make, model: _model, year: _year));
-                        if (!mounted) return;
-                        Navigator.of(context).pop(true);
-                      } catch (e) {
-                        if (!mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Error adding vehicle: ${e.toString()}'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      } finally {
-                        if (mounted) {
-                          setState(() => _isLoading = false);
-                        }
-                      }
-                    }
-                  },
+                  onPressed: _isLoading ? null : _saveVehicle,
                   child: const Text('Save Vehicle'),
                 ),
               ],
