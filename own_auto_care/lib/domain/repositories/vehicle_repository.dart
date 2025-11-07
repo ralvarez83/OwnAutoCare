@@ -1,9 +1,10 @@
 
 import '../entities/vehicle.dart';
+import '../value_objects/vehicle_id.dart';
 
 abstract class VehicleRepository {
-  Future<List<Vehicle>> getAllVehicles();
-  Future<Vehicle?> getVehicleById(String id);
-  Future<void> saveVehicle(Vehicle vehicle);
-  Future<void> deleteVehicle(String id);
+  Future<void> createVehicle(Vehicle vehicle);
+  Future<List<Vehicle>> getVehicles();
+  Future<void> updateVehicle(Vehicle vehicle);
+  Future<void> deleteVehicle(VehicleId id);
 }

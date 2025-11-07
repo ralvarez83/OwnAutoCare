@@ -33,6 +33,7 @@ dependencies:
 
   # UI Components
   cupertino_icons: ^1.0.8
+  flutter_signin_button: ^2.0.0
   
   # HTTP & Networking
   http: ^1.1.0

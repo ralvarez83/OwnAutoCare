@@ -20,4 +20,26 @@ class Attachment extends Equatable {
 
   @override
   List<Object?> get props => [id, filename, mime, driveProvider, drivePath, size];
+
+  factory Attachment.fromJson(Map<String, dynamic> json) {
+    return Attachment(
+      id: json['id'],
+      filename: json['filename'],
+      mime: json['mime'],
+      driveProvider: json['driveProvider'],
+      drivePath: json['drivePath'],
+      size: json['size'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'filename': filename,
+      'mime': mime,
+      'driveProvider': driveProvider,
+      'drivePath': drivePath,
+      'size': size,
+    };
+  }
 }

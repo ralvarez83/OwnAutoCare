@@ -1,53 +1,31 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:own_auto_care/infrastructure/providers/google_drive_provider.dart';
+import 'package:own_auto_care/presentation/widgets/auth_button.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({super.key});
+  final GoogleDriveProvider googleDriveProvider;
+  /// Optional builder used to create the auth button. This makes the
+  /// WelcomeScreen easier to test by allowing tests to inject a simple
+  /// stub widget instead of rendering platform-specific buttons.
+  final Widget Function(GoogleDriveProvider provider, VoidCallback onAuthenticated)? authButtonBuilder;
+
+  const WelcomeScreen({
+    super.key,
+    required this.googleDriveProvider,
+    this.authButtonBuilder,
+  });
 
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  late final GoogleDriveProvider _googleDriveProvider;
   String _status = 'Listo para autenticar con Google Drive';
 
-  @override
-  void initState() {
-    super.initState();
-    _googleDriveProvider = GoogleDriveProvider();
-  }
-
-  Future<void> _authenticate() async {
-    setState(() {
-      _status = 'Iniciando autenticación...';
-    });
-
-    try {
-      // ensureSetup will trigger authentication
-      await _googleDriveProvider.ensureSetup();
-      setState(() {
-        _status = 'Autenticación completada ✅';
-      });
-      Navigator.of(context).pushReplacementNamed('/vehicle-list');
-    } catch (e, s) {
-      // ignore: avoid_print
-      print('Error de autenticación: $e');
-      // ignore: avoid_print
-      print('Stack trace: $s');
-      if (e is UnimplementedError) {
-        setState(() {
-          _status = 'Autenticación completada ✅ (ensureSetup no implementado)';
-        });
-        Navigator.of(context).pushReplacementNamed('/vehicle-list');
-      } else {
-        setState(() {
-          _status = 'Error de autenticación: $e';
-        });
-      }
-    }
+  void _onAuthenticated() {
+    Navigator.of(context).pushReplacementNamed('/vehicle-list');
   }
 
   @override
@@ -79,21 +57,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ),
             ),
             const SizedBox(height: 32),
-            ElevatedButton.icon(
-              onPressed: _authenticate,
-              icon: const Icon(Icons.cloud),
-              label: const Text('Login with Google Drive'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                textStyle: const TextStyle(fontSize: 16),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Nota: Necesitas configurar OAuth en Google Cloud Console y reemplazar el client ID',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-              textAlign: TextAlign.center,
-            ),
+            // Use the injected builder when provided (tests), otherwise
+            // fall back to the real `AuthButton` implementation.
+            widget.authButtonBuilder != null
+                ? widget.authButtonBuilder!(widget.googleDriveProvider, _onAuthenticated)
+                : AuthButton(
+                    googleDriveProvider: widget.googleDriveProvider,
+                    onAuthenticated: _onAuthenticated,
+                  ),
           ],
         ),
       ),

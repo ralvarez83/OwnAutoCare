@@ -36,6 +36,13 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
+  <script>
+    function onSignIn(googleUser) {
+      var id_token = googleUser.credential;
+      // Send the token to your Flutter app
+      window.flutter_post_message(id_token);
+    }
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

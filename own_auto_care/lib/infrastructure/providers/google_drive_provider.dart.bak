@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -18,14 +19,10 @@ class GoogleDriveProvider implements CloudStorageProvider {
   String? _appFolderId;
   static const String _appFolderName = 'OwnAutoCare';
 
-  GoogleDriveProvider({
-    GoogleSignIn? googleSignIn,
-    this.clientId = googleClientId,
-    this.scopes = const ['https://www.googleapis.com/auth/drive.file'],
-  }) : _googleSignIn = googleSignIn ?? GoogleSignIn(
-    scopes: scopes,
-    clientId: clientId,
-  );
+  GoogleDriveProvider({GoogleSignIn? googleSignIn, this.clientId = googleClientId, this.scopes = const ['https://www.googleapis.com/auth/drive.file']}) : _googleSignIn = googleSignIn ?? GoogleSignIn(
+        scopes: scopes,
+        clientId: clientId,
+      );
 
   Future<void> authenticate() async {
     if (_client != null) {
@@ -46,15 +43,16 @@ class GoogleDriveProvider implements CloudStorageProvider {
         gauth.AccessToken(
           'Bearer',
           googleAuth.accessToken!,
-          DateTime.now().toUtc().add(const Duration(hours: 1)),
+          DateTime.now().toUtc().add(const Duration(hours: 1)), // Assuming 1 hour expiry
         ),
-        null,
+        null, // No refresh token from google_sign_in
         _googleSignIn.scopes,
       );
 
       _client = gauth.authenticatedClient(http.Client(), credentials);
 
     } catch (e) {
+      // Handle error
       rethrow;
     }
   }
@@ -68,15 +66,16 @@ class GoogleDriveProvider implements CloudStorageProvider {
         gauth.AccessToken(
           'Bearer',
           token,
-          DateTime.now().toUtc().add(const Duration(hours: 1)),
+          DateTime.now().toUtc().add(const Duration(hours: 1)), // Assuming 1 hour expiry
         ),
-        null,
+        null, // No refresh token from google_sign_in
         _googleSignIn.scopes,
       );
 
       _client = gauth.authenticatedClient(http.Client(), credentials);
 
     } catch (e) {
+      // Handle error
       rethrow;
     }
   }
@@ -97,12 +96,14 @@ class GoogleDriveProvider implements CloudStorageProvider {
     await authenticate();
     final driveApi = drive.DriveApi(_client!);
     
+    // Check if app folder exists
     final appFolder = await _findAppFolder(driveApi);
     if (appFolder != null) {
       _appFolderId = appFolder.id;
       return;
     }
 
+    // Create app folder if it doesn't exist
     final folderMetadata = drive.File()
       ..name = _appFolderName
       ..mimeType = 'application/vnd.google-apps.folder'
@@ -111,22 +112,19 @@ class GoogleDriveProvider implements CloudStorageProvider {
     final folder = await driveApi.files.create(folderMetadata);
     _appFolderId = folder.id;
     
+    // Initialize carcare.json with empty structure
     await writeRootMetadata({
       'vehicles': [],
       'settings': {
         'currency': 'EUR',
-        'locale': 'es-ES',
+        'locale': 'es-ES'
       }
     });
   }
 
   Future<drive.File?> _findAppFolder(drive.DriveApi driveApi) async {
     final query = "name = '$_appFolderName' and mimeType = 'application/vnd.google-apps.folder' and trashed = false";
-    final result = await driveApi.files.list(
-      q: query,
-      spaces: 'drive',
-      $fields: 'files(id, name)',
-    );
+    final result = await driveApi.files.list(q: query, spaces: 'drive', $fields: 'files(id, name)');
     if (result.files?.isEmpty ?? true) {
       return null;
     }
@@ -140,14 +138,15 @@ class GoogleDriveProvider implements CloudStorageProvider {
       await ensureSetup();
     }
 
-    final driveApi = drive.DriveApi(_client!);
-    final metadataFile = await _getMetadataFile(driveApi);
+    final api = drive.DriveApi(_client!);
+    final metadataFile = await _getMetadataFile(api);
     if (metadataFile == null) {
+      // If file doesn't exist, create it with initial structure
       final initialData = {
         'vehicles': [],
         'settings': {
           'currency': 'EUR',
-          'locale': 'es-ES',
+          'locale': 'es-ES'
         }
       };
       await writeRootMetadata(initialData);
@@ -155,22 +154,27 @@ class GoogleDriveProvider implements CloudStorageProvider {
     }
 
     try {
-      final content = await driveApi.files.get(
-        metadataFile.id!,
-        downloadOptions: drive.DownloadOptions.fullMedia,
+      final content = await api.files.get(
+        metadataFile.id!, 
+        downloadOptions: drive.DownloadOptions.fullMedia
       ) as drive.Media;
-      
       final jsonStr = await utf8.decodeStream(content.stream);
       return json.decode(jsonStr);
     } catch (e) {
+      // If there's an error reading the file, return empty initial data
       return {
         'vehicles': [],
         'settings': {
           'currency': 'EUR',
-          'locale': 'es-ES',
+          'locale': 'es-ES'
         }
       };
     }
+        metadataFile.id!, 
+        downloadOptions: drive.DownloadOptions.fullMedia
+      ) as drive.Media;
+      final jsonStr = await utf8.decodeStream(content.stream);
+      return json.decode(jsonStr);
   }
 
   @override
@@ -181,26 +185,22 @@ class GoogleDriveProvider implements CloudStorageProvider {
     }
 
     final driveApi = drive.DriveApi(_client!);
-    final metadataFile = await _getMetadataFile(driveApi);
+    final file = await _getMetadataFile(driveApi);
     final content = json.encode(data);
     final media = drive.Media(
-      Stream.value(utf8.encode(content)),
+      Stream.value(utf8.encode(content)), 
       content.length,
-      contentType: 'application/json',
+      contentType: 'application/json'
     );
 
-    if (metadataFile == null) {
+    if (file == null) {
       final newFile = drive.File()
         ..name = 'carcare.json'
         ..parents = [_appFolderId!]
         ..mimeType = 'application/json';
       await driveApi.files.create(newFile, uploadMedia: media);
     } else {
-      await driveApi.files.update(
-        drive.File(),
-        metadataFile.id!,
-        uploadMedia: media,
-      );
+      await driveApi.files.update(drive.File(), file.id!, uploadMedia: media);
     }
   }
 
@@ -225,30 +225,35 @@ class GoogleDriveProvider implements CloudStorageProvider {
   @override
   Future<List<CloudItem>> listRecords(String vehicleId) async {
     await authenticate();
+    // Implementation to list records
     throw UnimplementedError();
   }
 
   @override
   Future<JsonMap> readRecord(String path) async {
     await authenticate();
+    // Implementation to read a record
     throw UnimplementedError();
   }
 
   @override
   Future<void> writeRecord(String path, JsonMap data) async {
     await authenticate();
+    // Implementation to write a record
     throw UnimplementedError();
   }
 
   @override
   Future<void> deleteRecord(String path) async {
     await authenticate();
+    // Implementation to delete a record
     throw UnimplementedError();
   }
 
   @override
   Future<Uri> getAttachmentLink(String path) async {
     await authenticate();
+    // Implementation to get attachment link
     throw UnimplementedError();
   }
 }
