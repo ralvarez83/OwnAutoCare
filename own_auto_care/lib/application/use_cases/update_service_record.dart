@@ -1,12 +1,12 @@
 import 'package:own_auto_care/domain/entities/service_record.dart';
 import 'package:own_auto_care/domain/repositories/service_record_repository.dart';
 
-class ListServiceRecords {
+class UpdateServiceRecord {
   final ServiceRecordRepository repository;
 
-  ListServiceRecords(this.repository);
+  UpdateServiceRecord(this.repository);
 
-  Future<List<ServiceRecord>> call(String vehicleId) {
-    return repository.getServiceRecordsByVehicleId(vehicleId);
+  Future<void> call(ServiceRecord serviceRecord) {
+    return repository.saveServiceRecord(serviceRecord);
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:own_auto_care/domain/entities/service_record.dart';
 import 'package:own_auto_care/domain/repositories/service_record_repository.dart';
 import 'package:own_auto_care/infrastructure/providers/google_drive_provider.dart';
@@ -9,61 +7,105 @@ class ServiceRecordRepositoryImpl implements ServiceRecordRepository {
 
   ServiceRecordRepositoryImpl(this.googleDriveProvider);
 
-  static const String _recordsKey = 'records';
+  static const String _serviceRecordsKey = 'serviceRecords';
 
   @override
-  Future<void> deleteServiceRecord(String id) async {
-    final data = await _readData();
-    final records = (data[_recordsKey] as List<dynamic>?)?.cast<Map<String, dynamic>>() ?? [];
-    records.removeWhere((r) => r['id'] == id);
-    data[_recordsKey] = records;
-    await _writeData(data);
+  Future<List<ServiceRecord>> getServiceRecordsByVehicleId(String vehicleId) async {
+    try {
+      final data = await _readData();
+      if (!data.containsKey(_serviceRecordsKey)) {
+        return [];
+      }
+      final serviceRecords = (data[_serviceRecordsKey] as List)
+          .cast<Map<String, dynamic>>();
+      return serviceRecords
+          .map((json) => ServiceRecord.fromJson(json))
+          .where((record) => record.vehicleId == vehicleId)
+          .toList();
+    } catch (e) {
+      throw 'Failed to get service records: ${e.toString()}';
+    }
   }
 
   @override
   Future<ServiceRecord?> getServiceRecordById(String id) async {
-    final data = await _readData();
-    final records = (data[_recordsKey] as List<dynamic>?)?.cast<Map<String, dynamic>>() ?? [];
     try {
-      final json = records.firstWhere((r) => r['id'] == id);
-      return ServiceRecord.fromJson(json);
+      final data = await _readData();
+      if (!data.containsKey(_serviceRecordsKey)) {
+        return null;
+      }
+      final serviceRecords = (data[_serviceRecordsKey] as List)
+          .cast<Map<String, dynamic>>();
+      final json = serviceRecords.firstWhere(
+        (recordJson) => recordJson['id'] == id,
+        orElse: () => {},
+      );
+      return json.isNotEmpty ? ServiceRecord.fromJson(json) : null;
     } catch (e) {
-      return null;
+      throw 'Failed to get service record: ${e.toString()}';
     }
-  }
-
-  @override
-  Future<List<ServiceRecord>> getServiceRecordsByVehicleId(String vehicleId) async {
-    final data = await _readData();
-    final records = (data[_recordsKey] as List<dynamic>?)?.cast<Map<String, dynamic>>() ?? [];
-    final filtered = records.where((r) => r['vehicleId'] == vehicleId).toList();
-    return filtered.map((j) => ServiceRecord.fromJson(j)).toList();
   }
 
   @override
   Future<void> saveServiceRecord(ServiceRecord serviceRecord) async {
-    final data = await _readData();
-    final records = (data[_recordsKey] as List<dynamic>?)?.cast<Map<String, dynamic>>() ?? [];
-    final index = records.indexWhere((r) => r['id'] == serviceRecord.id);
-    if (index != -1) {
-      records[index] = serviceRecord.toJson();
-    } else {
-      records.add(serviceRecord.toJson());
+    try {
+      final data = await _readData();
+      if (!data.containsKey(_serviceRecordsKey)) {
+        data[_serviceRecordsKey] = [];
+      }
+
+      final serviceRecords = (data[_serviceRecordsKey] as List)
+          .cast<Map<String, dynamic>>();
+      final index = serviceRecords.indexWhere(
+          (recordJson) => recordJson['id'] == serviceRecord.id);
+
+      if (index == -1) {
+        serviceRecords.add(serviceRecord.toJson());
+      } else {
+        serviceRecords[index] = serviceRecord.toJson();
+      }
+      data[_serviceRecordsKey] = serviceRecords;
+      await _writeData(data);
+    } catch (e) {
+      throw 'Failed to save service record: ${e.toString()}';
     }
-    data[_recordsKey] = records;
-    await _writeData(data);
+  }
+
+  @override
+  Future<void> deleteServiceRecord(String id) async {
+    try {
+      final data = await _readData();
+      if (!data.containsKey(_serviceRecordsKey)) {
+        return;
+      }
+
+      final serviceRecords = (data[_serviceRecordsKey] as List)
+          .cast<Map<String, dynamic>>();
+      serviceRecords.removeWhere((recordJson) => recordJson['id'] == id);
+      data[_serviceRecordsKey] = serviceRecords;
+      await _writeData(data);
+    } catch (e) {
+      throw 'Failed to delete service record: ${e.toString()}';
+    }
   }
 
   Future<Map<String, dynamic>> _readData() async {
     try {
       final content = await googleDriveProvider.readRootMetadata();
+      if (content is! Map<String, dynamic>) {
+        throw 'Invalid data format';
+      }
       return content;
     } catch (e) {
-      return {};
+      throw 'Failed to read data: ${e.toString()}';
     }
   }
 
   Future<void> _writeData(Map<String, dynamic> data) async {
-    await googleDriveProvider.writeRootMetadata(data);
+    try {
+      await googleDriveProvider.writeRootMetadata(data);
+    } catch (e) {
+      throw 'Failed to write data: ${e.toString()}';
+    }
   }
 }

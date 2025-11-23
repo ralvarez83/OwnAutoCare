@@ -4,25 +4,27 @@ import 'package:own_auto_care/domain/value_objects/vehicle_id.dart';
 
 class Vehicle extends Equatable {
   final VehicleId id;
-  final String name;
+  final String? name;
   final String make;
   final String model;
   final int year;
   final String? vin;
   final String? plates;
+  final String? photoUrl;
 
   const Vehicle({
     required this.id,
-    required this.name,
+    this.name,
     required this.make,
     required this.model,
     required this.year,
     this.vin,
     this.plates,
+    this.photoUrl,
   });
 
   @override
-  List<Object?> get props => [id, name, make, model, year, vin, plates];
+  List<Object?> get props => [id, name, make, model, year, vin, plates, photoUrl];
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
     return Vehicle(
@@ -33,6 +35,7 @@ class Vehicle extends Equatable {
       year: json['year'],
       vin: json['vin'],
       plates: json['plates'],
+      photoUrl: json['photoUrl'],
     );
   }
 
@@ -45,6 +48,7 @@ class Vehicle extends Equatable {
       'year': year,
       'vin': vin,
       'plates': plates,
+      'photoUrl': photoUrl,
     };
   }
 
@@ -56,6 +60,7 @@ class Vehicle extends Equatable {
     int? year,
     String? vin,
     String? plates,
+    String? photoUrl,
   }) {
     return Vehicle(
       id: id ?? this.id,
@@ -65,6 +70,7 @@ class Vehicle extends Equatable {
       year: year ?? this.year,
       vin: vin ?? this.vin,
       plates: plates ?? this.plates,
+      photoUrl: photoUrl ?? this.photoUrl,
     );
   }
 }

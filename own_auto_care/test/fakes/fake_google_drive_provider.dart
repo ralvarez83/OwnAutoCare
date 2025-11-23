@@ -48,5 +48,8 @@ class FakeGoogleDriveProvider implements GoogleDriveProvider {
 
   @override
   Future<void> logout() async {}
+
+  @override
+  Future<String?> uploadFile(dynamic file, String folderName) async => 'https://fake.url/image.jpg';
 }
 

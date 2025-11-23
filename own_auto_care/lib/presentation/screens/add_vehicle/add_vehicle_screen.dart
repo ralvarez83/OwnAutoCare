@@ -5,11 +5,21 @@ import 'package:own_auto_care/domain/repositories/vehicle_repository.dart';
 import 'package:own_auto_care/domain/value_objects/vehicle_id.dart';
 import 'package:uuid/uuid.dart';
 import 'package:own_auto_care/presentation/widgets/loading_overlay.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:own_auto_care/infrastructure/providers/google_drive_provider.dart';
+import 'package:own_auto_care/l10n/app_localizations.dart';
 
 class AddVehicleScreen extends StatefulWidget {
   final VehicleRepository vehicleRepository;
+  final GoogleDriveProvider googleDriveProvider;
 
-  const AddVehicleScreen({super.key, required this.vehicleRepository});
+  const AddVehicleScreen({
+    super.key,
+    required this.vehicleRepository,
+    required this.googleDriveProvider,
+  });
 
   @override
   State<AddVehicleScreen> createState() => _AddVehicleScreenState();
@@ -22,12 +32,24 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   String _make = '';
   String _model = '';
   int _year = 0;
+  XFile? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _imageFile = image;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Vehicle'),
+        title: Text(l10n.addVehicleTitle),
       ),
       body: LoadingOverlay(
         isLoading: _isLoading,
@@ -37,27 +59,53 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             key: _formKey,
             child: Column(
               children: [
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Vehicle Name',
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Container(
+                    height: 150,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12),
+                      image: _imageFile != null
+                          ? DecorationImage(
+                              image: kIsWeb
+                                  ? NetworkImage(_imageFile!.path)
+                                  : FileImage(File(_imageFile!.path)) as ImageProvider,
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
+                    child: _imageFile == null
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add_a_photo, size: 40, color: Colors.grey[600]),
+                              const SizedBox(height: 8),
+                              Text(l10n.addPhotoLabel ?? 'Add Photo', style: TextStyle(color: Colors.grey[600])),
+                            ],
+                          )
+                        : null,
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a vehicle name';
-                    }
-                    return null;
-                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: l10n.vehicleNameLabel,
+                  ),
+                  // Name is optional now
+                  validator: null,
                   onSaved: (value) {
-                    _vehicleName = value!;
+                    _vehicleName = (value == null || value.isEmpty) ? '' : value;
                   },
                 ),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Make',
+                  decoration: InputDecoration(
+                    labelText: l10n.makeLabel,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter the make';
+                      return l10n.makeRequired;
                     }
                     return null;
                   },
@@ -66,12 +114,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Model',
+                  decoration: InputDecoration(
+                    labelText: l10n.modelLabel,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter the model';
+                      return l10n.modelRequired;
                     }
                     return null;
                   },
@@ -80,13 +128,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Year',
+                  decoration: InputDecoration(
+                    labelText: l10n.yearLabel,
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter the year';
+                      return l10n.yearRequired;
                     }
                     return null;
                   },
@@ -100,16 +148,28 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
                       setState(() => _isLoading = true);
-                      try {
-                        final createVehicle = CreateVehicle(widget.vehicleRepository);
-                        await createVehicle(Vehicle(id: VehicleId(const Uuid().v4()), name: _vehicleName, make: _make, model: _model, year: _year));
+                        try {
+                          String? photoUrl;
+                          if (_imageFile != null) {
+                            photoUrl = await widget.googleDriveProvider.uploadFile(_imageFile!, 'Photos');
+                          }
+
+                          final createVehicle = CreateVehicle(widget.vehicleRepository);
+                          await createVehicle(Vehicle(
+                            id: VehicleId(const Uuid().v4()),
+                            name: _vehicleName,
+                            make: _make,
+                            model: _model,
+                            year: _year,
+                            photoUrl: photoUrl,
+                          ));
                         if (!mounted) return;
                         Navigator.of(context).pop(true);
                       } catch (e) {
                         if (!mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Error adding vehicle: ${e.toString()}'),
+                            content: Text(l10n.errorAddingVehicle(e.toString())),
                             backgroundColor: Colors.red,
                           ),
                         );
@@ -120,7 +180,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       }
                     }
                   },
-                  child: const Text('Save Vehicle'),
+                  child: Text(l10n.saveVehicleButton),
                 ),
               ],
             ),

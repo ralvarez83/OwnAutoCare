@@ -5,7 +5,7 @@ class DeleteServiceRecord {
 
   DeleteServiceRecord(this.repository);
 
-  Future<void> call(String id) {
-    return repository.deleteServiceRecord(id);
+  Future<void> call(String serviceRecordId) {
+    return repository.deleteServiceRecord(serviceRecordId);
   }
 }

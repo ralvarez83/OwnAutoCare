@@ -1,0 +1,501 @@
+{
+  "appTitle": "OwnAutoCare",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "vehicleListTitle": "My Vehicles",
+  "@vehicleListTitle": {
+    "description": "Title for the vehicle list screen"
+  },
+  "addVehicle": "Add Vehicle",
+  "@addVehicle": {
+    "description": "Label for adding a new vehicle"
+  },
+  "addRecord": "Add Record",
+  "@addRecord": {
+    "description": "Label for adding a service record"
+  },
+  "reminders": "Reminders",
+  "@reminders": {
+    "description": "Label for reminders"
+  },
+  "edit": "Edit",
+  "@edit": {
+    "description": "Label for edit action"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Label for delete action"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Label for cancel action"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Label for save action"
+  },
+  "deleteVehicleConfirmTitle": "Delete Vehicle",
+  "@deleteVehicleConfirmTitle": {
+    "description": "Title for delete vehicle confirmation dialog"
+  },
+  "deleteVehicleConfirmContent": "Are you sure you want to delete this vehicle? This action cannot be undone.",
+  "@deleteVehicleConfirmContent": {
+    "description": "Content for delete vehicle confirmation dialog"
+  },
+  "deleteRecordConfirmTitle": "Delete Service Record",
+  "@deleteRecordConfirmTitle": {
+    "description": "Title for delete record confirmation dialog"
+  },
+  "deleteRecordConfirmContent": "Are you sure you want to delete this service record? This action cannot be undone.",
+  "@deleteRecordConfirmContent": {
+    "description": "Content for delete record confirmation dialog"
+  },
+  "noVehicles": "No vehicles added yet",
+  "@noVehicles": {
+    "description": "Message shown when no vehicles exist"
+  },
+  "noRecords": "No service records yet",
+  "@noRecords": {
+    "description": "Message shown when no service records exist"
+  },
+  "totalRecords": "{count} Records",
+  "@totalRecords": {
+    "description": "Label for total records count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "totalCost": "Total: {cost}",
+  "@totalCost": {
+    "description": "Label for total cost",
+    "placeholders": {
+      "cost": {
+        "type": "String",
+        "example": "$100.00"
+      }
+    }
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Label for settings"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Label for logout"
+  },
+  "exportData": "Export Data",
+  "@exportData": {
+    "description": "Label for exporting data"
+  },
+  "importData": "Import Data",
+  "@importData": {
+    "description": "Label for importing data"
+  },
+  "exportSuccess": "Data exported successfully",
+  "@exportSuccess": {
+    "description": "Message for successful export"
+  },
+  "importSuccess": "Data imported successfully",
+  "@importSuccess": {
+    "description": "Message for successful import"
+  },
+  "errorGeneric": "An error occurred: {error}",
+  "@errorGeneric": {
+    "description": "Generic error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "addFirstCarPrompt": "Add your first car to get started",
+  "@addFirstCarPrompt": {
+    "description": "Prompt to add the first vehicle"
+  },
+  "errorAddingVehicle": "Error adding vehicle: {error}",
+  "@errorAddingVehicle": {
+    "description": "Error message when adding a vehicle fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorEditingVehicle": "Error editing vehicle: {error}",
+  "@errorEditingVehicle": {
+    "description": "Error message when editing a vehicle fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recordsCount": "{count} Records",
+  "@recordsCount": {
+    "description": "Label for the number of service records",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "totalCost": "Total: {cost}",
+  "@totalCost": {
+    "description": "Label for the total cost of service records",
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "noServiceRecords": "No service records yet",
+  "@noServiceRecords": {
+    "description": "Message shown when there are no service records"
+  },
+  "deleteServiceRecordTitle": "Delete Service Record",
+  "@deleteServiceRecordTitle": {
+    "description": "Title for the delete service record confirmation dialog"
+  },
+  "deleteServiceRecordContent": "Are you sure you want to delete this service record? This action cannot be undone.",
+  "@deleteServiceRecordContent": {
+    "description": "Content for the delete service record confirmation dialog"
+  },
+  "serviceRecordDeleted": "Service record deleted successfully",
+  "@serviceRecordDeleted": {
+    "description": "Message shown when a service record is deleted successfully"
+  },
+  "errorLoadingRecords": "Error loading service records: {error}",
+  "@errorLoadingRecords": {
+    "description": "Error message when loading service records fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorEditingRecord": "Error editing service record: {error}",
+  "@errorEditingRecord": {
+    "description": "Error message when editing a service record fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorDeletingRecord": "Error deleting service record: {error}",
+  "@errorDeletingRecord": {
+    "description": "Error message when deleting a service record fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorAddingRecord": "Error adding service record: {error}",
+  "@errorAddingRecord": {
+    "description": "Error message when adding a service record fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "addVehicleTitle": "Add Vehicle",
+  "@addVehicleTitle": {
+    "description": "Title for the add vehicle screen"
+  },
+  "editVehicleTitle": "Edit Vehicle",
+  "@editVehicleTitle": {
+    "description": "Title for the edit vehicle screen"
+  },
+  "vehicleNameLabel": "Vehicle Name",
+  "@vehicleNameLabel": {
+    "description": "Label for the vehicle name input"
+  },
+  "makeLabel": "Make",
+  "@makeLabel": {
+    "description": "Label for the make input"
+  },
+  "modelLabel": "Model",
+  "@modelLabel": {
+    "description": "Label for the model input"
+  },
+  "yearLabel": "Year",
+  "@yearLabel": {
+    "description": "Label for the year input"
+  },
+  "vehicleNameRequired": "Please enter a vehicle name",
+  "@vehicleNameRequired": {
+    "description": "Validation message for vehicle name"
+  },
+  "makeRequired": "Please enter the make",
+  "@makeRequired": {
+    "description": "Validation message for make"
+  },
+  "modelRequired": "Please enter the model",
+  "@modelRequired": {
+    "description": "Validation message for model"
+  },
+  "yearRequired": "Please enter the year",
+  "@yearRequired": {
+    "description": "Validation message for year"
+  },
+  "saveVehicleButton": "Save Vehicle",
+  "@saveVehicleButton": {
+    "description": "Label for the save vehicle button"
+  },
+  "addServiceRecordTitle": "Add Service Record",
+  "@addServiceRecordTitle": {
+    "description": "Title for the add service record screen"
+  },
+  "editServiceRecordTitle": "Edit Service Record",
+  "@editServiceRecordTitle": {
+    "description": "Title for the edit service record screen"
+  },
+  "dateLabel": "Date",
+  "@dateLabel": {
+    "description": "Label for the date input"
+  },
+  "serviceTypeLabel": "Service Type",
+  "@serviceTypeLabel": {
+    "description": "Label for the service type input"
+  },
+  "mileageLabel": "Mileage (km)",
+  "@mileageLabel": {
+    "description": "Label for the mileage input"
+  },
+  "costLabel": "Cost",
+  "@costLabel": {
+    "description": "Label for the cost input"
+  },
+  "currencyLabel": "Currency",
+  "@currencyLabel": {
+    "description": "Label for the currency input"
+  },
+  "notesLabel": "Notes",
+  "@notesLabel": {
+    "description": "Label for the notes input"
+  },
+  "mileageRequired": "Please enter mileage",
+  "@mileageRequired": {
+    "description": "Validation message for mileage"
+  },
+  "validNumberRequired": "Please enter a valid number",
+  "@validNumberRequired": {
+    "description": "Validation message for valid number"
+  },
+  "costRequired": "Please enter cost",
+  "@costRequired": {
+    "description": "Validation message for cost"
+  },
+  "saveServiceRecordButton": "Save Service Record",
+  "@saveServiceRecordButton": {
+    "description": "Label for the save service record button"
+  },
+  "errorSavingServiceRecord": "Error saving service record: {error}",
+  "@errorSavingServiceRecord": {
+    "description": "Error message when saving a service record fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceTypeOilChange": "Oil Change",
+  "serviceTypeInspection": "Inspection",
+  "serviceTypeBrakePads": "Brake Pads",
+  "serviceTypeTires": "Tires",
+  "serviceTypeCoolant": "Coolant",
+  "serviceTypeBattery": "Battery",
+  "serviceTypeItv": "ITV",
+  "serviceTypeOther": "Other",
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Title for the settings screen"
+  },
+  "exportDataTitle": "Export Data",
+  "@exportDataTitle": {
+    "description": "Title for the export data option"
+  },
+  "exportDataSubtitle": "Save a backup of your data to a JSON file",
+  "@exportDataSubtitle": {
+    "description": "Subtitle for the export data option"
+  },
+  "importDataTitle": "Import Data",
+  "@importDataTitle": {
+    "description": "Title for the import data option"
+  },
+  "importDataSubtitle": "Restore data from a JSON backup",
+  "@importDataSubtitle": {
+    "description": "Subtitle for the import data option"
+  },
+  "exportReadyMessage": "Export ready",
+  "@exportReadyMessage": {
+    "description": "Message when export is ready"
+  },
+  "exportFailedMessage": "Export failed: {error}",
+  "@exportFailedMessage": {
+    "description": "Message when export fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "importSuccessfulMessage": "Import successful",
+  "@importSuccessfulMessage": {
+    "description": "Message when import is successful"
+  },
+  "importFailedMessage": "Import failed: {error}",
+  "@importFailedMessage": {
+    "description": "Message when import fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "remindersTitle": "Reminders",
+  "@remindersTitle": {
+    "description": "Title for the reminders screen"
+  },
+  "dueDateLabel": "Due Date: {date}",
+  "@dueDateLabel": {
+    "description": "Label for due date",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueMileageLabel": "Due Mileage: {mileage} km",
+  "@dueMileageLabel": {
+    "description": "Label for due mileage",
+    "placeholders": {
+      "mileage": {
+        "type": "int"
+      }
+    }
+  },
+  "notesDisplayLabel": "Notes: {notes}",
+  "@notesDisplayLabel": {
+    "description": "Label for notes display",
+    "placeholders": {
+      "notes": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteReminderTitle": "Delete Reminder",
+  "@deleteReminderTitle": {
+    "description": "Title for delete reminder dialog"
+  },
+  "deleteReminderContent": "Are you sure you want to delete this reminder? This action cannot be undone.",
+  "@deleteReminderContent": {
+    "description": "Content for delete reminder dialog"
+  },
+  "cancelButton": "Cancel",
+  "@cancelButton": {
+    "description": "Label for cancel button"
+  },
+  "deleteButton": "Delete",
+  "@deleteButton": {
+    "description": "Label for delete button"
+  },
+  "errorLoadingReminders": "Error loading reminders: {error}",
+  "@errorLoadingReminders": {
+    "description": "Error message when loading reminders fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorEditingReminder": "Error editing reminder: {error}",
+  "@errorEditingReminder": {
+    "description": "Error message when editing a reminder fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderDeletedMessage": "Reminder deleted successfully",
+  "@reminderDeletedMessage": {
+    "description": "Message when reminder is deleted"
+  },
+  "errorDeletingReminder": "Error deleting reminder: {error}",
+  "@errorDeletingReminder": {
+    "description": "Error message when deleting a reminder fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorAddingReminder": "Error adding reminder: {error}",
+  "@errorAddingReminder": {
+    "description": "Error message when adding a reminder fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "addReminderTitle": "Add Reminder",
+  "@addReminderTitle": {
+    "description": "Title for add reminder screen"
+  },
+  "editReminderTitle": "Edit Reminder",
+  "@editReminderTitle": {
+    "description": "Title for edit reminder screen"
+  },
+  "titleLabel": "Title",
+  "@titleLabel": {
+    "description": "Label for title input"
+  },
+  "titleRequired": "Please enter a title",
+  "@titleRequired": {
+    "description": "Validation message for title"
+  },
+  "dueDateOrMileageRequired": "Either Due Date or Due Mileage must be provided.",
+  "@dueDateOrMileageRequired": {
+    "description": "Validation message for due date or mileage"
+  },
+  "saveReminderButton": "Save Reminder",
+  "@saveReminderButton": {
+    "description": "Label for save reminder button"
+  },
+  "notSet": "Not set",
+  "@notSet": {
+    "description": "Label for not set value"
+  },
+  "welcomeScreenTitle": "Welcome to OwnAutoCare",
+  "@welcomeScreenTitle": {
+    "description": "Title for the welcome screen"
+  },
+  "readyToAuthenticate": "Ready to authenticate with Google Drive",
+  "@readyToAuthenticate": {
+    "description": "Status message when ready to authenticate"
+  },
+  "signInWithGoogle": "Sign in with Google",
+  "@signInWithGoogle": {
+    "description": "Label for sign in with Google button"
+  },
+  "dueDateFieldLabel": "Due Date",
+  "@dueDateFieldLabel": {
+    "description": "Label for due date field"
+  },
+  "specifyTypeLabel": "Specify Type",
+  "@specifyTypeLabel": {
+    "description": "Label for custom service type input"
+  },
+  "addPhotoLabel": "Add Photo",
+  "@addPhotoLabel": {
+    "description": "Label for adding a photo"
+  }
+}

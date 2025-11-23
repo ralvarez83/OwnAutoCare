@@ -21,4 +21,44 @@ class Reminder extends Equatable {
 
   @override
   List<Object?> get props => [id, vehicleId, dueDate, dueMileageKm, title, notes];
+
+  factory Reminder.fromJson(Map<String, dynamic> json) {
+    return Reminder(
+      id: json['id'],
+      vehicleId: json['vehicleId'],
+      dueDate: json['dueDate'] != null ? DateTime.parse(json['dueDate']) : null,
+      dueMileageKm: json['dueMileageKm'],
+      title: json['title'],
+      notes: json['notes'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'vehicleId': vehicleId,
+      'dueDate': dueDate?.toIso8601String(),
+      'dueMileageKm': dueMileageKm,
+      'title': title,
+      'notes': notes,
+    };
+  }
+
+  Reminder copyWith({
+    String? id,
+    String? vehicleId,
+    DateTime? dueDate,
+    int? dueMileageKm,
+    String? title,
+    String? notes,
+  }) {
+    return Reminder(
+      id: id ?? this.id,
+      vehicleId: vehicleId ?? this.vehicleId,
+      dueDate: dueDate ?? this.dueDate,
+      dueMileageKm: dueMileageKm ?? this.dueMileageKm,
+      title: title ?? this.title,
+      notes: notes ?? this.notes,
+    );
+  }
 }

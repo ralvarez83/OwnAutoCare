@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:googleapis_auth/googleapis_auth.dart' as gauth;
@@ -11,45 +14,57 @@ import '../../domain/repositories/repositories.dart';
 import 'package:own_auto_care/secrets.dart';
 
 class GoogleDriveProvider implements CloudStorageProvider {
-  final GoogleSignIn _googleSignIn;
+  late final GoogleSignIn _googleSignIn;
   http.Client? _client;
   final String clientId;
   final List<String> scopes;
   String? _appFolderId;
   static const String _appFolderName = 'OwnAutoCare';
+  bool _initialized = false;
 
   GoogleDriveProvider({
     GoogleSignIn? googleSignIn,
     this.clientId = googleClientId,
     this.scopes = const ['https://www.googleapis.com/auth/drive.file'],
-  }) : _googleSignIn = googleSignIn ?? GoogleSignIn(
-    scopes: scopes,
-    clientId: clientId,
-  );
+  }) {
+    _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
+  }
+
+  Future<void> _ensureInitialized() async {
+    if (_initialized) return;
+    
+    await _googleSignIn.initialize(
+      clientId: clientId,
+    );
+    _initialized = true;
+  }
 
   Future<void> authenticate() async {
     if (_client != null) {
       return;
     }
     try {
-      final googleUser = await _googleSignIn.signIn();
+      await _ensureInitialized();
+      
+      final googleUser = await _googleSignIn.attemptLightweightAuthentication();
       if (googleUser == null) {
         throw 'Sign in aborted by user';
       }
       
-      final googleAuth = await googleUser.authentication;
-      if (googleAuth.accessToken == null) {
-        throw 'Access token is null';
+      // Get authorization with scopes
+      final authorization = await _googleSignIn.authorizationClient.authorizeScopes(scopes);
+      if (authorization == null || authorization.accessToken.isEmpty) {
+        throw 'Failed to obtain access token';
       }
 
       final credentials = gauth.AccessCredentials(
         gauth.AccessToken(
           'Bearer',
-          googleAuth.accessToken!,
+          authorization.accessToken,
           DateTime.now().toUtc().add(const Duration(hours: 1)),
         ),
         null,
-        _googleSignIn.scopes,
+        scopes,
       );
 
       _client = gauth.authenticatedClient(http.Client(), credentials);
@@ -64,6 +79,8 @@ class GoogleDriveProvider implements CloudStorageProvider {
       return;
     }
     try {
+      await _ensureInitialized();
+      
       final credentials = gauth.AccessCredentials(
         gauth.AccessToken(
           'Bearer',
@@ -71,7 +88,7 @@ class GoogleDriveProvider implements CloudStorageProvider {
           DateTime.now().toUtc().add(const Duration(hours: 1)),
         ),
         null,
-        _googleSignIn.scopes,
+        scopes,
       );
 
       _client = gauth.authenticatedClient(http.Client(), credentials);
@@ -82,14 +99,34 @@ class GoogleDriveProvider implements CloudStorageProvider {
   }
 
   Future<GoogleSignInAccount?> getCurrentUser() async {
-    return await _googleSignIn.signInSilently();
+    // On web, avoid calling google_sign_in methods that might trigger
+    // the GSI One Tap / Auto-sign-in flow, as it conflicts with our
+    // manual OAuth2 implementation and causes error popups.
+    if (kIsWeb) {
+      return null;
+    }
+
+    await _ensureInitialized();
+    return await _googleSignIn.attemptLightweightAuthentication();
   }
 
   Future<void> logout() async {
-    await _googleSignIn.disconnect();
-    await _googleSignIn.signOut();
+    await _ensureInitialized();
+    try {
+      // Try to disconnect (may not work on web with OAuth2)
+      await _googleSignIn.disconnect();
+    } catch (e) {
+      // Ignore disconnect errors on web
+    }
+    try {
+      await _googleSignIn.signOut();
+    } catch (e) {
+      // Ignore signOut errors
+    }
+    // Always clear local state
     _client = null;
     _appFolderId = null;
+    _initialized = false;
   }
 
   @override
@@ -244,6 +281,68 @@ class GoogleDriveProvider implements CloudStorageProvider {
   Future<void> deleteRecord(String path) async {
     await authenticate();
     throw UnimplementedError();
+  }
+
+  Future<String?> uploadFile(XFile file, String folderName) async {
+    await authenticate();
+    if (_appFolderId == null) await ensureSetup();
+
+    final driveApi = drive.DriveApi(_client!);
+    
+    // Find or create folder
+    final folderId = await _findOrCreateFolder(driveApi, folderName, _appFolderId!);
+
+    // Create file metadata
+    final fileMetadata = drive.File()
+      ..name = file.name
+      ..parents = [folderId];
+      // ..mimeType = file.mimeType; // mimeType might be null, Drive auto-detects
+
+    // Upload
+    final media = drive.Media(
+      file.openRead(),
+      await file.length(),
+    );
+
+    final uploadedFile = await driveApi.files.create(
+      fileMetadata,
+      uploadMedia: media,
+      $fields: 'id, webContentLink, webViewLink',
+    );
+    
+    // Make public to allow Image.network to work easily
+    // In a production app with sensitive data, we should use authenticated image fetching instead.
+    try {
+      final permission = drive.Permission()
+        ..role = 'reader'
+        ..type = 'anyone';
+      await driveApi.permissions.create(permission, uploadedFile.id!);
+    } catch (e) {
+      debugPrint('Error making file public: $e');
+    }
+
+    return uploadedFile.webContentLink;
+  }
+
+  Future<String> _findOrCreateFolder(drive.DriveApi driveApi, String name, String parentId) async {
+    final query = "name = '$name' and '$parentId' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false";
+    final result = await driveApi.files.list(
+      q: query,
+      spaces: 'drive',
+      $fields: 'files(id)',
+    );
+
+    if (result.files?.isNotEmpty ?? false) {
+      return result.files!.first.id!;
+    }
+
+    final folderMetadata = drive.File()
+      ..name = name
+      ..parents = [parentId]
+      ..mimeType = 'application/vnd.google-apps.folder';
+    
+    final folder = await driveApi.files.create(folderMetadata);
+    return folder.id!;
   }
 
   @override
