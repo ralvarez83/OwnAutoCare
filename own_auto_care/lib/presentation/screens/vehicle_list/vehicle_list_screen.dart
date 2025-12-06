@@ -261,10 +261,8 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => ServiceRecordListScreen(
                                       serviceRecordRepository: widget.serviceRecordRepository,
-                                      vehicleId: vehicle.id.value,
-                                      vehicleName: (vehicle.name != null && vehicle.name!.isNotEmpty)
-                                          ? vehicle.name!
-                                          : '${vehicle.make} ${vehicle.model}',
+                                      vehicleRepository: widget.vehicleRepository,
+                                      vehicle: vehicle,
                                       googleDriveProvider: widget.googleDriveProvider,
                                     ),
                                   ),

@@ -344,11 +344,23 @@ abstract class AppLocalizations {
   /// **'Model'**
   String get modelLabel;
 
-  /// Label for the year input
+  /// Label for the year field
   ///
   /// In en, this message translates to:
   /// **'Year'**
   String get yearLabel;
+
+  /// Label for the plates field
+  ///
+  /// In en, this message translates to:
+  /// **'Plates'**
+  String get platesLabel;
+
+  /// Label for the VIN field
+  ///
+  /// In en, this message translates to:
+  /// **'VIN'**
+  String get vinLabel;
 
   /// Validation message for vehicle name
   ///
@@ -775,6 +787,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Inspection Cost'**
   String get itvCostLabel;
+
+  /// No description provided for @tirePressureConfigStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get tirePressureConfigStandard;
+
+  /// No description provided for @tirePressureConfigEco.
+  ///
+  /// In en, this message translates to:
+  /// **'ECO'**
+  String get tirePressureConfigEco;
+
+  /// No description provided for @tirePressureConfigLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Loaded'**
+  String get tirePressureConfigLoaded;
+
+  /// No description provided for @addTirePressureConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Configuration'**
+  String get addTirePressureConfigTitle;
+
+  /// No description provided for @renameTirePressureConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Configuration'**
+  String get renameTirePressureConfigTitle;
+
+  /// No description provided for @configNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration Name'**
+  String get configNameLabel;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @rename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get rename;
+
+  /// No description provided for @deleteConfigConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this configuration?'**
+  String get deleteConfigConfirmation;
+
+  /// No description provided for @cannotDeleteLastConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot delete the last configuration.'**
+  String get cannotDeleteLastConfig;
+
+  /// Label for front tire pressure input
+  ///
+  /// In en, this message translates to:
+  /// **'Front Tire Pressure'**
+  String get frontTirePressureLabel;
+
+  /// Label for rear tire pressure input
+  ///
+  /// In en, this message translates to:
+  /// **'Rear Tire Pressure'**
+  String get rearTirePressureLabel;
+
+  /// Label for the latest recorded mileage
+  ///
+  /// In en, this message translates to:
+  /// **'Latest Mileage'**
+  String get latestMileageLabel;
+
+  /// Title for the vehicle summary section
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Summary'**
+  String get vehicleSummaryTitle;
+
+  /// Message when no mileage is found
+  ///
+  /// In en, this message translates to:
+  /// **'No mileage recorded'**
+  String get noMileageRecorded;
 }
 
 class _AppLocalizationsDelegate

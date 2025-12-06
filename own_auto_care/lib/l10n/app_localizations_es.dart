@@ -159,6 +159,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yearLabel => 'Año';
 
   @override
+  String get platesLabel => 'Matrícula';
+
+  @override
+  String get vinLabel => 'VIN';
+
+  @override
   String get vehicleNameRequired =>
       'Por favor introduce un nombre para el vehículo';
 
@@ -395,4 +401,51 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get itvCostLabel => 'Coste Inspección';
+
+  @override
+  String get tirePressureConfigStandard => 'Estándar';
+
+  @override
+  String get tirePressureConfigEco => 'ECO';
+
+  @override
+  String get tirePressureConfigLoaded => 'Cargado';
+
+  @override
+  String get addTirePressureConfigTitle => 'Añadir Configuración';
+
+  @override
+  String get renameTirePressureConfigTitle => 'Editar Configuración';
+
+  @override
+  String get configNameLabel => 'Nombre de la Configuración';
+
+  @override
+  String get add => 'Añadir';
+
+  @override
+  String get rename => 'Renombrar';
+
+  @override
+  String get deleteConfigConfirmation =>
+      '¿Seguro que quieres eliminar esta configuración?';
+
+  @override
+  String get cannotDeleteLastConfig =>
+      'No se puede eliminar la última configuración.';
+
+  @override
+  String get frontTirePressureLabel => 'Presión Delantera';
+
+  @override
+  String get rearTirePressureLabel => 'Presión Trasera';
+
+  @override
+  String get latestMileageLabel => 'Último Kilometraje';
+
+  @override
+  String get vehicleSummaryTitle => 'Resumen del Vehículo';
+
+  @override
+  String get noMileageRecorded => 'Sin kilometraje';
 }

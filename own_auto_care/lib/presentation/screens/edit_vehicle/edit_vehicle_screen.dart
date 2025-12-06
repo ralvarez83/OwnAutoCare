@@ -7,6 +7,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:own_auto_care/infrastructure/providers/google_drive_provider.dart';
+import 'package:own_auto_care/presentation/widgets/tire_pressure_widget.dart';
+import 'package:own_auto_care/domain/entities/tire_pressure_configuration.dart';
 import 'package:own_auto_care/l10n/app_localizations.dart';
 
 class EditVehicleScreen extends StatefulWidget {
@@ -33,6 +35,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
   late String _make;
   late String _model;
   late int _year;
+  late List<TirePressureConfiguration> _tirePressures;
   String? _photoUrl;
   XFile? _imageFile;
   final ImagePicker _picker = ImagePicker();
@@ -53,6 +56,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
     _make = widget.vehicle.make;
     _model = widget.vehicle.model;
     _year = widget.vehicle.year;
+    _tirePressures = List.from(widget.vehicle.tirePressures);
     _photoUrl = widget.vehicle.photoUrl;
   }
 
@@ -73,11 +77,15 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
         model: _model,
         year: _year,
         photoUrl: _photoUrl,
+        tirePressures: _tirePressures,
       );
 
       final updateVehicle = UpdateVehicle(widget.vehicleRepository);
       await updateVehicle(updatedVehicle);
 
+      if (!mounted) return;
+      // Delay pop to avoid !_debugLocked error if build is in progress
+      await Future.delayed(Duration.zero);
       if (!mounted) return;
       Navigator.of(context).pop(updatedVehicle);
     } catch (e) {
@@ -194,6 +202,14 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                     return null;
                   },
                   onSaved: (value) => _year = int.parse(value!),
+                ),
+                const SizedBox(height: 16),
+                const SizedBox(height: 16),
+                TirePressureWidget(
+                  initialConfigurations: _tirePressures,
+                  onChanged: (configs) {
+                    _tirePressures = configs;
+                  },
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(

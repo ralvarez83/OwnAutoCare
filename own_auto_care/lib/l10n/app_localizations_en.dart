@@ -158,6 +158,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yearLabel => 'Year';
 
   @override
+  String get platesLabel => 'Plates';
+
+  @override
+  String get vinLabel => 'VIN';
+
+  @override
   String get vehicleNameRequired => 'Please enter a vehicle name';
 
   @override
@@ -391,4 +397,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get itvCostLabel => 'Inspection Cost';
+
+  @override
+  String get tirePressureConfigStandard => 'Standard';
+
+  @override
+  String get tirePressureConfigEco => 'ECO';
+
+  @override
+  String get tirePressureConfigLoaded => 'Loaded';
+
+  @override
+  String get addTirePressureConfigTitle => 'Add Configuration';
+
+  @override
+  String get renameTirePressureConfigTitle => 'Edit Configuration';
+
+  @override
+  String get configNameLabel => 'Configuration Name';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get rename => 'Rename';
+
+  @override
+  String get deleteConfigConfirmation =>
+      'Are you sure you want to delete this configuration?';
+
+  @override
+  String get cannotDeleteLastConfig => 'Cannot delete the last configuration.';
+
+  @override
+  String get frontTirePressureLabel => 'Front Tire Pressure';
+
+  @override
+  String get rearTirePressureLabel => 'Rear Tire Pressure';
+
+  @override
+  String get latestMileageLabel => 'Latest Mileage';
+
+  @override
+  String get vehicleSummaryTitle => 'Vehicle Summary';
+
+  @override
+  String get noMileageRecorded => 'No mileage recorded';
 }

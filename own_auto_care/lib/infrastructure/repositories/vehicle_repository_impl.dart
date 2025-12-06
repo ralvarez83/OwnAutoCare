@@ -48,9 +48,20 @@ class VehicleRepositoryImpl implements VehicleRepository {
         return [];
       }
       final vehicles = (data['vehicles'] as List).cast<Map<String, dynamic>>();
-      return vehicles.map((json) => Vehicle.fromJson(json)).toList();
+      final List<Vehicle> result = [];
+      for (var i = 0; i < vehicles.length; i++) {
+        try {
+          result.add(Vehicle.fromJson(vehicles[i]));
+        } catch (e) {
+          // Log detailed error for this specific vehicle
+          print('Error parsing vehicle at index $i: $e');
+          print('Vehicle JSON: ${vehicles[i]}');
+          rethrow; // Re-throw to show user there's a problem
+        }
+      }
+      return result;
     } catch (e) {
-      throw 'Failed to get vehicles: \${e.toString()}';
+      throw 'Failed to get vehicles: ${e.toString()}';
     }
   }
 

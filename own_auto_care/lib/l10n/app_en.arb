@@ -226,7 +226,15 @@
   },
   "yearLabel": "Year",
   "@yearLabel": {
-    "description": "Label for the year input"
+    "description": "Label for the year field"
+  },
+  "platesLabel": "Plates",
+  "@platesLabel": {
+    "description": "Label for the plates field"
+  },
+  "vinLabel": "VIN",
+  "@vinLabel": {
+    "description": "Label for the VIN field"
   },
   "vehicleNameRequired": "Please enter a vehicle name",
   "@vehicleNameRequired": {
@@ -510,5 +518,36 @@
   "itvResultLabel": "Result",
   "itvResultFavorable": "Favorable",
   "itvResultUnfavorable": "Unfavorable",
-  "itvCostLabel": "Inspection Cost"
+  "itvCostLabel": "Inspection Cost",
+  "tirePressureConfigStandard": "Standard",
+  "tirePressureConfigEco": "ECO",
+  "tirePressureConfigLoaded": "Loaded",
+  "addTirePressureConfigTitle": "Add Configuration",
+  "renameTirePressureConfigTitle": "Edit Configuration",
+  "configNameLabel": "Configuration Name",
+  "add": "Add",
+  "rename": "Rename",
+  "delete": "Delete",
+  "deleteConfigConfirmation": "Are you sure you want to delete this configuration?",
+  "cannotDeleteLastConfig": "Cannot delete the last configuration.",
+  "frontTirePressureLabel": "Front Tire Pressure",
+  "@frontTirePressureLabel": {
+    "description": "Label for front tire pressure input"
+  },
+  "rearTirePressureLabel": "Rear Tire Pressure",
+  "@rearTirePressureLabel": {
+    "description": "Label for rear tire pressure input"
+  },
+  "latestMileageLabel": "Latest Mileage",
+  "@latestMileageLabel": {
+    "description": "Label for the latest recorded mileage"
+  },
+  "vehicleSummaryTitle": "Vehicle Summary",
+  "@vehicleSummaryTitle": {
+    "description": "Title for the vehicle summary section"
+  },
+  "noMileageRecorded": "No mileage recorded",
+  "@noMileageRecorded": {
+    "description": "Message when no mileage is found"
+  }
 }
