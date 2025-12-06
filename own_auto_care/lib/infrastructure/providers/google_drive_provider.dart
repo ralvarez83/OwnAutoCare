@@ -33,8 +33,30 @@ class GoogleDriveProvider implements CloudStorageProvider {
   Future<void> _ensureInitialized() async {
     if (_initialized) return;
     
+    // Select the appropriate OAuth client ID based on platform:
+    // - Web: uses web client ID (from secrets.dart)
+    // - iOS/macOS: use iOS client ID (both support custom URL schemes)
+    // - Android: would use Android client ID (not configured yet)
+    String effectiveClientId;
+    
+    if (kIsWeb) {
+      // Web platform
+      effectiveClientId = clientId;
+    } else if (defaultTargetPlatform == TargetPlatform.iOS || 
+               defaultTargetPlatform == TargetPlatform.macOS) {
+      // iOS and macOS use the same iOS client ID (custom URL scheme redirect)
+      effectiveClientId = '681662721549-br4iqg5e57d85gvnu9io7it4ljasltav.apps.googleusercontent.com';
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      // Android: For now, use iOS client ID, but ideally should have its own
+      // TODO: Create Android OAuth client ID in Google Cloud Console if needed
+      effectiveClientId = '681662721549-br4iqg5e57d85gvnu9io7it4ljasltav.apps.googleusercontent.com';
+    } else {
+      // Fallback for other platforms
+      effectiveClientId = clientId;
+    }
+    
     await _googleSignIn.initialize(
-      clientId: clientId,
+      clientId: effectiveClientId,
     );
     _initialized = true;
   }
@@ -46,7 +68,22 @@ class GoogleDriveProvider implements CloudStorageProvider {
     try {
       await _ensureInitialized();
       
-      final googleUser = await _googleSignIn.attemptLightweightAuthentication();
+      // For desktop/mobile, we need to use the full sign-in flow
+      // attemptLightweightAuthentication() only works if user signed in before
+      GoogleSignInAccount? googleUser;
+      
+      if (kIsWeb) {
+        // Web uses lightweight auth
+        googleUser = await _googleSignIn.attemptLightweightAuthentication();
+      } else {
+        // Desktop/mobile: try lightweight first, fall back to full sign-in
+        googleUser = await _googleSignIn.attemptLightweightAuthentication();
+        if (googleUser == null) {
+          // Full sign-in flow for first-time users
+          googleUser = await _googleSignIn.authenticate(scopeHint: scopes);
+        }
+      }
+      
       if (googleUser == null) {
         throw 'Sign in aborted by user';
       }

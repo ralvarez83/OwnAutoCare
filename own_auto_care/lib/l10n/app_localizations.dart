@@ -715,6 +715,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add Photo'**
   String get addPhotoLabel;
+
+  /// Error message when trying to save a record with no services
+  ///
+  /// In en, this message translates to:
+  /// **'Please add at least one service'**
+  String get errorNoServicesAdded;
+
+  /// No description provided for @visitTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit Type'**
+  String get visitTypeLabel;
+
+  /// No description provided for @visitTypeMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance'**
+  String get visitTypeMaintenance;
+
+  /// No description provided for @visitTypeRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Repair'**
+  String get visitTypeRepair;
+
+  /// No description provided for @visitTypeItv.
+  ///
+  /// In en, this message translates to:
+  /// **'ITV'**
+  String get visitTypeItv;
+
+  /// No description provided for @visitTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get visitTypeOther;
+
+  /// No description provided for @itvResultLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Result'**
+  String get itvResultLabel;
+
+  /// No description provided for @itvResultFavorable.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorable'**
+  String get itvResultFavorable;
+
+  /// No description provided for @itvResultUnfavorable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfavorable'**
+  String get itvResultUnfavorable;
+
+  /// No description provided for @itvCostLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspection Cost'**
+  String get itvCostLabel;
 }
 
 class _AppLocalizationsDelegate

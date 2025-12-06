@@ -365,4 +365,34 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get addPhotoLabel => 'Añadir Foto';
+
+  @override
+  String get errorNoServicesAdded => 'Por favor añade al menos un servicio';
+
+  @override
+  String get visitTypeLabel => 'Tipo de Visita';
+
+  @override
+  String get visitTypeMaintenance => 'Mantenimiento';
+
+  @override
+  String get visitTypeRepair => 'Reparación';
+
+  @override
+  String get visitTypeItv => 'ITV';
+
+  @override
+  String get visitTypeOther => 'Otro';
+
+  @override
+  String get itvResultLabel => 'Resultado';
+
+  @override
+  String get itvResultFavorable => 'Favorable';
+
+  @override
+  String get itvResultUnfavorable => 'Desfavorable';
+
+  @override
+  String get itvCostLabel => 'Coste Inspección';
 }

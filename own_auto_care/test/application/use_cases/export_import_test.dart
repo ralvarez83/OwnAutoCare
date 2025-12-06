@@ -140,8 +140,13 @@ void main() {
     vehicleId: 'v1',
     date: DateTime(2023, 1, 1),
     mileageKm: 10000,
-    type: 'Oil Change',
-    parts: [],
+    items: [
+      ServiceItem(
+        type: 'Oil Change',
+        parts: [],
+        cost: 50.0,
+      ),
+    ],
     cost: 50.0,
     currency: 'USD',
     attachments: [],
@@ -198,7 +203,7 @@ void main() {
 
     expect(records.length, 1);
     expect(records.first.id, 's1');
-    expect(records.first.type, 'Oil Change');
+    expect(records.first.items.first.type, 'Oil Change');
 
     expect(reminders.length, 1);
     expect(reminders.first.id, 'r1');

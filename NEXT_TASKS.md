@@ -47,9 +47,7 @@
 **RESULTADO ESPERADO**: La aplicación se siente más rápida y receptiva.
 **DEMO**: La aplicación web se carga correctamente y muestra indicadores de carga durante las operaciones asíncronas.
 
-## 🥈 PRIORIDAD MEDIA (Siguientes sesiones)
-
-### 6. **Implementar logout** 
+### 6. **Implementar logout** ✅ **COMPLETADA**
 **CONTEXTO**: Permitir al usuario cerrar sesión.
 **PASOS ESPECÍFICOS**:
 - Añadir botón de logout en la pantalla de listado de vehículos.
@@ -58,7 +56,7 @@
 **RESULTADO ESPERADO**: El usuario puede cerrar sesión y volver a la pantalla de bienvenida.
 **DEMO**: Logout funcional.
 
-### 7. **CRUD de vehículos**
+### 7. **CRUD de vehículos** ✅ **COMPLETADA**
 **CONTEXTO**: Gestión completa de vehículos del usuario
 **PASOS ESPECÍFICOS**:
 - Implementar casos de uso: CreateVehicle, ListVehicles, UpdateVehicle
@@ -67,11 +65,42 @@
 **RESULTADO ESPERADO**: Gestión completa de vehículos
 **DEMO**: Crear, ver, editar y eliminar vehículos funcionando
 
-## 🥉 PRIORIDAD BAJA (Futuro)
+### 8. **Registros de mantenimiento** ✅ **COMPLETADA**
+**CONTEXTO**: Gestión completa de los registros de mantenimiento de un vehículo.
+**PASOS ESPECÍFICOS**:
+- Implementar casos de uso: `CreateServiceRecord`, `ListServiceRecords`, `GetServiceRecord`, `UpdateServiceRecord`, `DeleteServiceRecord`.
+- Conectar la UI con la lógica de negocio.
+- Persistencia en Google Drive (dentro del archivo `carcare.json`).
+- Crear tests unitarios para los casos de uso y el repositorio.
+**RESULTADO ESPERADO**: El usuario puede crear, ver, editar y eliminar registros de mantenimiento asociados a un vehículo.
+**DEMO**: Funcionalidad completa de CRUD para registros de mantenimiento.
 
-### 7. **Registros de mantenimiento**
-### 8. **Recordatorios**
-### 9. **Exportación/importación**
+## 🥈 PRIORIDAD MEDIA (Siguientes sesiones)
+
+### 9. **Recordatorios** ✅ **COMPLETADA**
+**CONTEXTO**: Permitir al usuario establecer recordatorios para el mantenimiento del vehículo.
+**PASOS ESPECÍFICOS**:
+- Crear entidad `Reminder`.
+- Implementar `ReminderRepository` y su implementación.
+- Implementar casos de uso: `CreateReminder`, `ListReminders`, `UpdateReminder`, `DeleteReminder`.
+- Conectar la UI con la lógica de negocio.
+- Persistencia en Google Drive.
+**RESULTADO ESPERADO**: El usuario puede crear, ver, editar y eliminar recordatorios.
+**DEMO**: Funcionalidad completa de CRUD para recordatorios.
+
+## 🥈 PRIORIDAD MEDIA (Siguientes sesiones)
+
+### 10. **Exportación/importación** ✅ **COMPLETADA**
+**CONTEXTO**: Permitir al usuario exportar e importar sus datos.
+**PASOS ESPECÍFICOS**:
+- Implementar casos de uso para exportar datos (e.g., a JSON o CSV).
+- Implementar casos de uso para importar datos (e.g., desde JSON o CSV).
+- Conectar la UI con la lógica de negocio.
+- Considerar la gestión de conflictos durante la importación.
+**RESULTADO ESPERADO**: El usuario puede exportar e importar sus datos de vehículos, registros de mantenimiento y recordatorios.
+**DEMO**: Funcionalidad de exportación/importación funcionando.
+
+### 11. **Registros de mantenimiento**
 
 ---
 

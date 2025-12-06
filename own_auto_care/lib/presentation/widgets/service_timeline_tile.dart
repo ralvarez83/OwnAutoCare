@@ -48,9 +48,54 @@ class ServiceTimelineTile extends StatelessWidget {
     ).format(amount);
   }
 
+  String _getLocalizedServiceType(BuildContext context, String type) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (type) {
+      case 'oil_change':
+        return l10n.serviceTypeOilChange;
+      case 'inspection':
+        return l10n.serviceTypeInspection;
+      case 'brake_pads':
+        return l10n.serviceTypeBrakePads;
+      case 'tires':
+        return l10n.serviceTypeTires;
+      case 'coolant':
+        return l10n.serviceTypeCoolant;
+      case 'battery':
+        return l10n.serviceTypeBattery;
+      case 'itv':
+        return l10n.serviceTypeItv;
+      case 'other':
+        return l10n.serviceTypeOther;
+      default:
+        return type;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    
+    // Determine display properties based on items
+    // Determine display properties based on visit type
+    String title;
+    IconData displayIcon;
+    Color displayColor;
+
+    if (record.visitType == VisitType.itv) {
+      title = '${l10n.visitTypeItv}: ${record.itvResult == ItvResult.favorable ? l10n.itvResultFavorable : l10n.itvResultUnfavorable}';
+      displayIcon = record.itvResult == ItvResult.favorable ? Icons.check_circle : Icons.cancel;
+      displayColor = record.itvResult == ItvResult.favorable ? Colors.green : Colors.red;
+    } else {
+      final primaryType = record.items.isNotEmpty ? record.items.first.type : 'other';
+      final isMultiple = record.items.length > 1;
+      
+      displayIcon = isMultiple ? Icons.car_repair : _getIconForType(primaryType);
+      displayColor = isMultiple ? AppColors.primary : _getColorForType(primaryType);
+      
+      title = record.items.map((i) => _getLocalizedServiceType(context, i.type)).join(', ');
+    }
+
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +120,7 @@ class ServiceTimelineTile extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.background,
                     border: Border.all(
-                      color: _getColorForType(record.type),
+                      color: displayColor,
                       width: 3,
                     ),
                     shape: BoxShape.circle,
@@ -123,12 +168,12 @@ class ServiceTimelineTile extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: _getColorForType(record.type).withOpacity(0.1),
+                                color: displayColor.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Icon(
-                                _getIconForType(record.type),
-                                color: _getColorForType(record.type),
+                                displayIcon,
+                                color: displayColor,
                                 size: 20,
                               ),
                             ),
@@ -138,7 +183,9 @@ class ServiceTimelineTile extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    record.type,
+                                    title.isEmpty ? l10n.serviceTypeOther : title,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                           fontWeight: FontWeight.bold,
                                         ),

@@ -176,3 +176,37 @@ Se realizaron múltiples intentos para implementar `renderButton`, pero todos re
 
 ---
 **INSTRUCCIÓN PARA AGENTES**: Copiar el template y rellenar al final de cada sesión.
+## Session: UX/UI Overhaul (Midnight Performance)
+**Date**: 2025-11-21
+**Objective**: Revamp the application's UI/UX to be more attractive, comfortable, and efficient.
+
+### 📝 Tasks Completed
+1.  **Design System Implementation**:
+    *   Created `AppTheme` with "Midnight Performance" dark palette.
+    *   Integrated `google_fonts` (Outfit).
+2.  **Vehicle List Revamp**:
+    *   Created `VehicleCard` with quick actions (Add Record, Reminders).
+    *   Refactored `VehicleListScreen` to use `CustomScrollView` and `SliverAppBar`.
+3.  **Service Record Revamp**:
+    *   Created `ServiceTimelineTile` for chronological visualization.
+    *   Refactored `ServiceRecordListScreen` to match the new design.
+4.  **Verification**:
+    *   Fixed compilation error (`CardTheme` vs `CardThemeData`).
+    *   Verified web build on port 8080.
+
+### 🛠 Technical Changes
+*   **New Files**:
+    *   `lib/presentation/theme/app_theme.dart`
+    *   `lib/presentation/widgets/vehicle_card.dart`
+    *   `lib/presentation/widgets/service_timeline_tile.dart`
+*   **Modified Files**:
+    *   `lib/main.dart`
+    *   `lib/presentation/screens/vehicle_list/vehicle_list_screen.dart`
+    *   `lib/presentation/screens/service_record_list/service_record_list_screen.dart`
+
+### 📊 Project Status
+*   **Current Version**: Dev (UX/UI Update)
+*   **Known Issues**: None.
+*   **Next Steps**: User verification and feedback.
+
+---

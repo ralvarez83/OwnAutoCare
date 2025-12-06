@@ -1,9 +1,9 @@
 # 📊 ESTADO ACTUAL DEL PROYECTO
 
 > **PARA AGENTES**: Este archivo te dice exactamente dónde está el proyecto AHORA  
-> **Fecha actualización**: 2025-11-06  
-> **Fase**: Interfaz básica (MVP) implementada
-> **Agente anterior**: Gemini (completó tarea #5)  
+> **Fecha actualización**: 2025-11-21  
+> **Fase**: Interfaz básica (MVP) implementada + Exportación/Importación
+> **Agente anterior**: Antigravity (completó tarea #10)
 > **Contexto**: App multiplataforma Flutter para registrar mantenimiento de coches
 
 ## ✅ Lo que YA está hecho
@@ -15,6 +15,12 @@
 - [x] **Autenticación OAuth (Google Drive)** ✅
 - [x] **Interfaz básica de usuario (MVP)** ✅
 - [x] **Mejora de la capacidad de respuesta de la interfaz de usuario** ✅
+- [x] **Implementar logout** ✅
+- [x] **CRUD de vehículos** ✅
+- [x] **Registros de mantenimiento** ✅
+- [x] **Recordatorios** ✅
+- [x] **Exportación/Importación de datos** ✅
+- [x] **UX/UI Overhaul (Midnight Performance Theme)** ✅
 
 ## 🎯 Funcionalidades completadas
 - **✅ Tarea #1**: Proyecto Flutter base completamente funcional
@@ -22,49 +28,33 @@
 - **✅ Tarea #3**: Autenticación Google Drive OAuth
 - **✅ Tarea #4**: Interfaz básica (MVP)
 - **✅ Tarea #5**: Mejora de la capacidad de respuesta de la interfaz de usuario
+- **✅ Tarea #6**: Implementar logout
+- **✅ Tarea #7**: CRUD de vehículos
+- **✅ Tarea #8**: Registros de mantenimiento
+- **✅ Tarea #9**: Recordatorios
+- **✅ Tarea #10**: Exportación/Importación
+- **✅ Tarea #11**: UX/UI Overhaul (Midnight Performance Theme)
 
 ## 🚧 En qué estamos trabajando ahora
-- **Próxima tarea**: Tarea #6 - Implementar logout
+- **Próxima tarea**: Tarea #11 - (Por definir / Revisar NEXT_TASKS)
 
-## 🛠️ Últimas acciones (6 de noviembre de 2025)
-1. Mejoras en la capacidad de respuesta de la interfaz de usuario:
-   - Añadido un `LoadingOverlay` para proporcionar feedback visual durante operaciones asíncronas.
-   - Deshabilitados los botones durante las operaciones asíncronas para evitar múltiples clics.
-   - Solucionados los problemas que impedían que la aplicación web se cargara correctamente.
-   - Corregido el error `unregistered_view_type` en la versión web relacionado con el botón de Google Sign-In.
+## 🛠️ Últimas acciones (21 de noviembre de 2025)
+1. Implementación de Exportación/Importación:
+   - Implementados casos de uso `ExportData` y `ImportData`.
+   - Añadida pantalla `SettingsScreen` con opciones de exportar e importar.
+   - Integrada navegación desde `VehicleListScreen`.
+   - Añadidas dependencias `file_picker`, `share_plus`, `path_provider`.
+   - Tests unitarios pasando para los casos de uso.
+2. UX/UI Overhaul:
+    - Implementado tema "Midnight Performance" (Dark Mode).
+    - Creados widgets `VehicleCard` y `ServiceTimelineTile`.
+    - Refactorizadas pantallas `VehicleListScreen` y `ServiceRecordListScreen`.
+    - Añadida tipografía `GoogleFonts.outfit`.
 
-2. Mejoras en la UI:
-   - Añadido botón de logout visible en la barra superior
-   - Mostrado el email del usuario activo
-   - Mejorado el tema visual (colores, contrastes)
+## 💡 Plan inmediato
 
-3. Tests y validación:
-   - Tests pasando tras actualización del harness
-   - Validada funcionalidad de login/logout en web
-   - Pendiente: configurar OAuth consent screen
-
-## 💡 Plan inmediato (6 de noviembre de 2025)
-
-Para completar la Tarea #6 y mejorar la experiencia de usuario, estos son los siguientes pasos:
-
-1. OAuth y permisos:
-   - Configurar OAuth consent screen en Google Cloud Console
-   - Verificar scopes mínimos necesarios
-   - Documentar proceso de configuración OAuth
-
-2. Mejoras de UX:
-   - Mejorar mensajes de error/éxito
-   - Considerar añadir un botón "Crear vehículo" en la lista vacía
-
-3. Testing:
-   - Añadir tests para casos de error en autenticación
-   - Validar flujo completo login → crud → logout
-   - Documentar pruebas manuales necesarias
-
-4. Documentación:
-   - Actualizar README con instrucciones de configuración OAuth
-   - Documentar decisiones de diseño (GSI + fallback)
-   - Crear guía de troubleshooting
+1. Revisar siguientes tareas en NEXT_TASKS.md.
+2. Posiblemente mejorar la UI o añadir más features (ej. estadísticas, gráficas).
 
 ## 🔧 Stack técnico confirmado
 - **Framework**: Flutter/Dart
@@ -74,7 +64,7 @@ Para completar la Tarea #6 y mejorar la experiencia de usuario, estos son los si
 - **Target**: Android, iOS, Web, Desktop
 
 ## 📱 Estado de la app
-**MVP funcional** - La navegación y las pantallas básicas están implementadas.
+**MVP funcional** - La navegación y las pantallas básicas están implementadas. Se puede exportar e importar datos.
 
 ## ⚠️ Problemas conocidos
 - El método `signIn()` de `google_sign_in` está obsoleto en la web y causa advertencias.

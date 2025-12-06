@@ -102,5 +102,15 @@
   "signInWithGoogle": "Iniciar sesión con Google",
   "dueDateFieldLabel": "Fecha de Vencimiento",
   "specifyTypeLabel": "Especificar Tipo",
-  "addPhotoLabel": "Añadir Foto"
+  "addPhotoLabel": "Añadir Foto",
+  "errorNoServicesAdded": "Por favor añade al menos un servicio",
+  "visitTypeLabel": "Tipo de Visita",
+  "visitTypeMaintenance": "Mantenimiento",
+  "visitTypeRepair": "Reparación",
+  "visitTypeItv": "ITV",
+  "visitTypeOther": "Otro",
+  "itvResultLabel": "Resultado",
+  "itvResultFavorable": "Favorable",
+  "itvResultUnfavorable": "Desfavorable",
+  "itvCostLabel": "Coste Inspección"
 }

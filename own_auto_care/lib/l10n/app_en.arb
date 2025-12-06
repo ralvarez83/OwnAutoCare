@@ -497,5 +497,18 @@
   "addPhotoLabel": "Add Photo",
   "@addPhotoLabel": {
     "description": "Label for adding a photo"
-  }
+  },
+  "errorNoServicesAdded": "Please add at least one service",
+  "@errorNoServicesAdded": {
+    "description": "Error message when trying to save a record with no services"
+  },
+  "visitTypeLabel": "Visit Type",
+  "visitTypeMaintenance": "Maintenance",
+  "visitTypeRepair": "Repair",
+  "visitTypeItv": "ITV",
+  "visitTypeOther": "Other",
+  "itvResultLabel": "Result",
+  "itvResultFavorable": "Favorable",
+  "itvResultUnfavorable": "Unfavorable",
+  "itvCostLabel": "Inspection Cost"
 }

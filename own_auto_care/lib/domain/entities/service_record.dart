@@ -3,17 +3,20 @@ import 'package:equatable/equatable.dart';
 
 import 'attachment.dart';
 
+enum VisitType { maintenance, repair, itv, other }
+enum ItvResult { favorable, unfavorable }
+
 class ServiceRecord extends Equatable {
   final String id;
   final String vehicleId;
   final DateTime date;
   final int mileageKm;
-  final String type;
-  final List<Part> parts;
-  final Labor? labor;
-  final double cost;
+  final VisitType visitType;
+  final ItvResult? itvResult; // Only for VisitType.itv
+  final List<ServiceItem> items;
+  final double cost; // Total cost of the visit
   final String currency;
-  final String? notes;
+  final String? notes; // General notes for the visit
   final List<Attachment> attachments;
 
   const ServiceRecord({
@@ -21,9 +24,9 @@ class ServiceRecord extends Equatable {
     required this.vehicleId,
     required this.date,
     required this.mileageKm,
-    required this.type,
-    required this.parts,
-    this.labor,
+    this.visitType = VisitType.maintenance,
+    this.itvResult,
+    required this.items,
     required this.cost,
     required this.currency,
     this.notes,
@@ -36,9 +39,9 @@ class ServiceRecord extends Equatable {
         vehicleId,
         date,
         mileageKm,
-        type,
-        parts,
-        labor,
+        visitType,
+        itvResult,
+        items,
         cost,
         currency,
         notes,
@@ -46,18 +49,74 @@ class ServiceRecord extends Equatable {
       ];
 
   factory ServiceRecord.fromJson(Map<String, dynamic> json) {
+    // Backward compatibility check
+    List<ServiceItem> items = [];
+    if (json.containsKey('items')) {
+      items = (json['items'] as List<dynamic>?)
+              ?.map((i) => ServiceItem.fromJson(i as Map<String, dynamic>))
+              .toList() ??
+          [];
+    } else if (json.containsKey('type')) {
+      // Legacy format migration
+      items.add(ServiceItem(
+        type: json['type'],
+        parts: (json['parts'] as List<dynamic>?)
+                ?.map((p) => Part.fromJson(p as Map<String, dynamic>))
+                .toList() ??
+            [],
+        labor: json['labor'] != null
+            ? Labor.fromJson(json['labor'] as Map<String, dynamic>)
+            : null,
+        cost: (json['cost'] as num).toDouble(),
+        notes: null,
+      ));
+    }
+
+    // Infer VisitType if missing
+    VisitType visitType;
+    if (json.containsKey('visitType')) {
+      visitType = VisitType.values.firstWhere(
+        (e) => e.name == json['visitType'],
+        orElse: () => VisitType.maintenance,
+      );
+    } else {
+      // Migration logic: check items for 'itv'
+      if (items.any((i) => i.type.toLowerCase().contains('itv'))) {
+        visitType = VisitType.itv;
+      } else {
+        visitType = VisitType.maintenance;
+      }
+    }
+
+    ItvResult? itvResult;
+    if (json.containsKey('itvResult') && json['itvResult'] != null) {
+      itvResult = ItvResult.values.firstWhere(
+        (e) => e.name == json['itvResult'],
+        orElse: () => ItvResult.favorable, // Default or null logic? Keeping null if not found logic is better but using defaults here. Actually let's use null if no match.
+      );
+      // Correction: firstWhere throws if not found without orElse.
+      try {
+         itvResult = ItvResult.values.byName(json['itvResult']);
+      } catch (_) {
+        itvResult = null;
+      }
+    }
+
     return ServiceRecord(
       id: json['id'],
       vehicleId: json['vehicleId'],
       date: DateTime.parse(json['date']),
       mileageKm: json['mileageKm'],
-      type: json['type'],
-      parts: (json['parts'] as List<dynamic>?)?.map((p) => Part.fromJson(p as Map<String, dynamic>)).toList() ?? [],
-      labor: json['labor'] != null ? Labor.fromJson(json['labor'] as Map<String, dynamic>) : null,
+      visitType: visitType,
+      itvResult: itvResult,
+      items: items,
       cost: (json['cost'] as num).toDouble(),
       currency: json['currency'],
       notes: json['notes'],
-      attachments: (json['attachments'] as List<dynamic>?)?.map((a) => Attachment.fromJson(a as Map<String, dynamic>)).toList() ?? [],
+      attachments: (json['attachments'] as List<dynamic>?)
+              ?.map((a) => Attachment.fromJson(a as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
 
@@ -67,13 +126,57 @@ class ServiceRecord extends Equatable {
       'vehicleId': vehicleId,
       'date': date.toIso8601String(),
       'mileageKm': mileageKm,
-      'type': type,
-      'parts': parts.map((p) => p.toJson()).toList(),
-      'labor': labor?.toJson(),
+      'visitType': visitType.name,
+      'itvResult': itvResult?.name,
+      'items': items.map((i) => i.toJson()).toList(),
       'cost': cost,
       'currency': currency,
       'notes': notes,
       'attachments': attachments.map((a) => a.toJson()).toList(),
+    };
+  }
+}
+
+class ServiceItem extends Equatable {
+  final String type;
+  final List<Part> parts;
+  final Labor? labor;
+  final double cost;
+  final String? notes;
+
+  const ServiceItem({
+    required this.type,
+    this.parts = const [],
+    this.labor,
+    required this.cost,
+    this.notes,
+  });
+
+  @override
+  List<Object?> get props => [type, parts, labor, cost, notes];
+
+  factory ServiceItem.fromJson(Map<String, dynamic> json) {
+    return ServiceItem(
+      type: json['type'],
+      parts: (json['parts'] as List<dynamic>?)
+              ?.map((p) => Part.fromJson(p as Map<String, dynamic>))
+              .toList() ??
+          [],
+      labor: json['labor'] != null
+          ? Labor.fromJson(json['labor'] as Map<String, dynamic>)
+          : null,
+      cost: (json['cost'] as num).toDouble(),
+      notes: json['notes'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type,
+      'parts': parts.map((p) => p.toJson()).toList(),
+      'labor': labor?.toJson(),
+      'cost': cost,
+      'notes': notes,
     };
   }
 }

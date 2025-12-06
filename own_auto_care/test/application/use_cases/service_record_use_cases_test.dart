@@ -34,8 +34,13 @@ void main() {
     vehicleId: 'vehicle1',
     date: DateTime(2023, 1, 1),
     mileageKm: 10000,
-    type: 'Oil Change',
-    parts: [],
+    items: [
+      ServiceItem(
+        type: 'Oil Change',
+        parts: [],
+        cost: 50.0,
+      ),
+    ],
     cost: 50.0,
     currency: 'USD',
     attachments: [],

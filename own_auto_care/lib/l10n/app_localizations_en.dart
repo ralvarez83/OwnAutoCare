@@ -361,4 +361,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addPhotoLabel => 'Add Photo';
+
+  @override
+  String get errorNoServicesAdded => 'Please add at least one service';
+
+  @override
+  String get visitTypeLabel => 'Visit Type';
+
+  @override
+  String get visitTypeMaintenance => 'Maintenance';
+
+  @override
+  String get visitTypeRepair => 'Repair';
+
+  @override
+  String get visitTypeItv => 'ITV';
+
+  @override
+  String get visitTypeOther => 'Other';
+
+  @override
+  String get itvResultLabel => 'Result';
+
+  @override
+  String get itvResultFavorable => 'Favorable';
+
+  @override
+  String get itvResultUnfavorable => 'Unfavorable';
+
+  @override
+  String get itvCostLabel => 'Inspection Cost';
 }

@@ -1,4 +1,4 @@
-package com.example.own_auto_care
+package eu.rubenalvarezgonzalez.ownAutoCare
 
 import io.flutter.embedding.android.FlutterActivity
 

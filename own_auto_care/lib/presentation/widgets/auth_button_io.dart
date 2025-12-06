@@ -13,8 +13,22 @@ class AuthButton extends StatelessWidget {
     return SignInButton(
       Buttons.Google,
       onPressed: () async {
-        await googleDriveProvider.authenticate();
-        onAuthenticated();
+        try {
+          print('AuthButton: Starting authentication...');
+          await googleDriveProvider.authenticate();
+          print('AuthButton: Authentication successful!');
+          onAuthenticated();
+        } catch (e) {
+          print('AuthButton: Authentication error: $e');
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error al iniciar sesión: $e'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
       },
     );
   }
