@@ -24,10 +24,10 @@ void main() {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final VehicleRepositoryImpl vehicleRepository;
   final ServiceRecordRepositoryImpl serviceRecordRepository;
-  final ReminderRepositoryImpl reminderRepository; // Add reminderRepository to MyApp
+  final ReminderRepositoryImpl reminderRepository;
   final GoogleDriveProvider googleDriveProvider;
 
   const MyApp({
@@ -39,7 +39,55 @@ class MyApp extends StatelessWidget {
   });
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _isAuthenticated = false;
+  bool _isCheckingAuth = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthentication();
+  }
+
+  Future<void> _checkAuthentication() async {
+    try {
+      // Check if user is already authenticated
+      final currentUser = await widget.googleDriveProvider.getCurrentUser();
+      
+      if (mounted) {
+        setState(() {
+          _isAuthenticated = currentUser != null;
+          _isCheckingAuth = false;
+        });
+      }
+    } catch (e) {
+      // If there's any error checking authentication, show welcome screen
+      if (mounted) {
+        setState(() {
+          _isAuthenticated = false;
+          _isCheckingAuth = false;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Show a loading screen while checking authentication
+    if (_isCheckingAuth) {
+      return MaterialApp(
+        theme: AppTheme.darkTheme,
+        home: const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
+
     return MaterialApp(
       navigatorKey: AppNavigator.navigatorKey,
       title: 'OwnAutoCare',
@@ -54,14 +102,20 @@ class MyApp extends StatelessWidget {
         Locale('en'), // English
         Locale('es'), // Spanish
       ],
-      initialRoute: '/',
+      home: _isAuthenticated 
+          ? VehicleListScreen(
+              vehicleRepository: widget.vehicleRepository,
+              serviceRecordRepository: widget.serviceRecordRepository,
+              reminderRepository: widget.reminderRepository,
+              googleDriveProvider: widget.googleDriveProvider,
+            )
+          : WelcomeScreen(googleDriveProvider: widget.googleDriveProvider),
       routes: {
-        '/': (context) => WelcomeScreen(googleDriveProvider: googleDriveProvider),
         '/vehicle-list': (context) => VehicleListScreen(
-              vehicleRepository: vehicleRepository,
-              serviceRecordRepository: serviceRecordRepository,
-              reminderRepository: reminderRepository, // Pass reminderRepository
-              googleDriveProvider: googleDriveProvider,
+              vehicleRepository: widget.vehicleRepository,
+              serviceRecordRepository: widget.serviceRecordRepository,
+              reminderRepository: widget.reminderRepository,
+              googleDriveProvider: widget.googleDriveProvider,
             ),
       },
     );
