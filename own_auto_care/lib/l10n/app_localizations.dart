@@ -877,6 +877,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No mileage recorded'**
   String get noMileageRecorded;
+
+  /// Title for logout confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logoutConfirmTitle;
+
+  /// Message for logout confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to logout?'**
+  String get logoutConfirmMessage;
+
+  /// Label for confirm button
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// Label for service record name field
+  ///
+  /// In en, this message translates to:
+  /// **'Record name (optional)'**
+  String get serviceRecordName;
+
+  /// Hint text for service record name field
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Routine oil change, Annual inspection'**
+  String get serviceRecordNameHint;
 }
 
 class _AppLocalizationsDelegate

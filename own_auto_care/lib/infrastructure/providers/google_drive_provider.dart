@@ -257,9 +257,10 @@ class GoogleDriveProvider implements CloudStorageProvider {
     final driveApi = drive.DriveApi(_client!);
     final metadataFile = await _getMetadataFile(driveApi);
     final content = json.encode(data);
+    final utf8Bytes = utf8.encode(content);
     final media = drive.Media(
-      Stream.value(utf8.encode(content)),
-      content.length,
+      Stream.value(utf8Bytes),
+      utf8Bytes.length,
       contentType: 'application/json',
     );
 

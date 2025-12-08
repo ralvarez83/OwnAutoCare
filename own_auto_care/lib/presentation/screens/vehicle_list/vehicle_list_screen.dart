@@ -15,6 +15,7 @@ import 'package:own_auto_care/presentation/widgets/vehicle_card.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:own_auto_care/l10n/app_localizations.dart';
 import 'package:own_auto_care/presentation/screens/service_record_form/service_record_form_screen.dart';
+import 'package:own_auto_care/presentation/screens/welcome/welcome_screen.dart';
 
 class VehicleListScreen extends StatefulWidget {
   final VehicleRepository vehicleRepository;
@@ -67,11 +68,46 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
   }
 
   Future<void> _logout() async {
+    final l10n = AppLocalizations.of(context)!;
+    
+    // Show confirmation dialog
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.logoutConfirmTitle),
+        content: Text(l10n.logoutConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(l10n.confirm),
+          ),
+        ],
+      ),
+    );
+
+    // If user cancelled, return early
+    if (shouldLogout != true || !mounted) return;
+
     setState(() => _isLoading = true);
     try {
       await widget.googleDriveProvider.logout();
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/');
+        // Navigate to WelcomeScreen and clear navigation stack
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => WelcomeScreen(
+              googleDriveProvider: widget.googleDriveProvider,
+            ),
+          ),
+          (route) => false, // Remove all previous routes
+        );
       }
     } catch (e) {
       if (mounted) {

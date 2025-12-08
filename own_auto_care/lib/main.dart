@@ -5,10 +5,11 @@ import 'package:own_auto_care/presentation/theme/app_theme.dart';
 import 'package:own_auto_care/infrastructure/providers/google_drive_provider.dart';
 import 'package:own_auto_care/infrastructure/repositories/vehicle_repository_impl.dart';
 import 'package:own_auto_care/infrastructure/repositories/service_record_repository_impl.dart';
-import 'package:own_auto_care/infrastructure/repositories/reminder_repository_impl.dart'; // Import ReminderRepositoryImpl
+import 'package:own_auto_care/infrastructure/repositories/reminder_repository_impl.dart';
 import 'package:own_auto_care/presentation/screens/vehicle_list/vehicle_list_screen.dart';
 import 'package:own_auto_care/presentation/screens/welcome/welcome_screen.dart';
 import 'package:own_auto_care/shared/navigation/app_navigator.dart';
+import 'package:own_auto_care/shared/locale/locale_detector.dart';
 
 void main() {
   final googleDriveProvider = GoogleDriveProvider();
@@ -79,6 +80,16 @@ class _MyAppState extends State<MyApp> {
     // Show a loading screen while checking authentication
     if (_isCheckingAuth) {
       return MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'),
+          Locale('es'),
+        ],
         theme: AppTheme.darkTheme,
         home: const Scaffold(
           body: Center(
@@ -102,6 +113,21 @@ class _MyAppState extends State<MyApp> {
         Locale('en'), // English
         Locale('es'), // Spanish
       ],
+      localeResolutionCallback: (locale, supportedLocales) {
+        // Check if the current device locale is supported
+        if (locale != null) {
+          for (final supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale.languageCode) {
+              return supportedLocale;
+            }
+          }
+        }
+        
+        // Fallback: Check browser/system language (for web compatibility)
+        // In web, we can also check the platform's locale hints
+        // For now, default to English if not found
+        return supportedLocales.first; // English
+      },
       home: _isAuthenticated 
           ? VehicleListScreen(
               vehicleRepository: widget.vehicleRepository,

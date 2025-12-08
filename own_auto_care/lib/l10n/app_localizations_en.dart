@@ -443,4 +443,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noMileageRecorded => 'No mileage recorded';
+
+  @override
+  String get logoutConfirmTitle => 'Logout';
+
+  @override
+  String get logoutConfirmMessage => 'Are you sure you want to logout?';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get serviceRecordName => 'Record name (optional)';
+
+  @override
+  String get serviceRecordNameHint =>
+      'e.g., Routine oil change, Annual inspection';
 }

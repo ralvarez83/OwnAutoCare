@@ -33,8 +33,9 @@ class _ServiceRecordFormScreenState extends State<ServiceRecordFormScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   late DateTime _date;
-  late int _mileageKm;
+  int? _mileageKm;
   late String _currency;
+  String? _recordName; // NEW: Optional custom name for the record
   String? _notes;
   VisitType _visitType = VisitType.maintenance;
   ItvResult _itvResult = ItvResult.favorable;
@@ -60,6 +61,7 @@ class _ServiceRecordFormScreenState extends State<ServiceRecordFormScreen> {
       _date = widget.record!.date;
       _mileageKm = widget.record!.mileageKm;
       _currency = widget.record!.currency;
+      _recordName = widget.record!.name; // Load existing name
       _notes = widget.record!.notes;
       _visitType = widget.record!.visitType;
       _itvResult = widget.record!.itvResult ?? ItvResult.favorable;
@@ -73,8 +75,9 @@ class _ServiceRecordFormScreenState extends State<ServiceRecordFormScreen> {
       _attachments.addAll(widget.record!.attachments);
     } else {
       _date = DateTime.now();
-      _mileageKm = 0;
+      _mileageKm = null;
       _currency = 'EUR';
+      _recordName = null; // Initialize as empty for new records
       _visitType = VisitType.maintenance;
     }
   }
@@ -194,6 +197,7 @@ class _ServiceRecordFormScreenState extends State<ServiceRecordFormScreen> {
             : _items,
         cost: _visitType == VisitType.itv ? _itvCost : _totalCost,
         currency: _currency,
+        name: _recordName, // NEW: Pass the custom name
         notes: _notes,
         attachments: _attachments,
       );
@@ -265,6 +269,31 @@ class _ServiceRecordFormScreenState extends State<ServiceRecordFormScreen> {
                 ),
                 const SizedBox(height: 16),
 
+                // Record Name (Optional)
+                TextFormField(
+                  initialValue: _recordName,
+                  onChanged: (value) {
+                    setState(() => _recordName = value.isEmpty ? null : value);
+                  },
+                  decoration: InputDecoration(
+                    labelText: l10n.serviceRecordName,
+                    hintText: l10n.serviceRecordNameHint,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    prefixIcon: const Icon(Icons.label_outline),
+                  ),
+                  maxLength: 100,
+                  buildCounter: (context, {required currentLength, required isFocused, maxLength}) {
+                    return Text(
+                      '$currentLength/${maxLength ?? 0}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    );
+                  },
+                  enabled: !_isLoading,
+                ),
+                const SizedBox(height: 16),
+
                 // ITV Specific Fields
                 if (_visitType == VisitType.itv) ...[
                   DropdownButtonFormField<ItvResult>(
@@ -329,22 +358,21 @@ class _ServiceRecordFormScreenState extends State<ServiceRecordFormScreen> {
 
                 // Mileage
                 TextFormField(
-                  initialValue: _mileageKm.toString(),
+                  initialValue: _mileageKm?.toString() ?? '',
                   decoration: InputDecoration(
                     labelText: l10n.mileageLabel,
                     suffixText: 'km',
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return l10n.mileageRequired;
-                    }
-                    if (int.tryParse(value) == null) {
-                      return l10n.validNumberRequired;
+                    if (value != null && value.isNotEmpty) {
+                      if (int.tryParse(value) == null) {
+                        return l10n.validNumberRequired;
+                      }
                     }
                     return null;
                   },
-                  onSaved: (value) => _mileageKm = int.parse(value!),
+                  onSaved: (value) => _mileageKm = value != null && value.isNotEmpty ? int.parse(value) : null,
                   enabled: !_isLoading,
                 ),
                 const SizedBox(height: 16),

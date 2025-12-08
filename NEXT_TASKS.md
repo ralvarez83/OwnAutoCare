@@ -5,6 +5,17 @@
 > **CONTEXTO**: Lee primero Agents.md (specs) y CURRENT_STATUS.md (estado actual)  
 > **REGLA**: Una sola tarea por sesión, no más
 
+## 📌 ESTADO ACTUAL (24 de noviembre 2025)
+
+✅ **SESIÓN #8 COMPLETADA**: Auditoría, fixes de compilación, detección de idiomas, mejora de registros
+- Todos los 30 tests pasando ✅
+- Compilación limpia ✅
+- Campo `name` en ServiceRecord implementado ✅
+- Widget de presentación actualizado ✅
+- **PRÓXIMO PASO**: Formulario para introducir nombres
+
+---
+
 ## 🥇 PRIORIDAD ALTA (Hacer YA)
 
 ### 1. **Inicializar proyecto Flutter** ✅ **COMPLETADA**
@@ -99,6 +110,18 @@
 - Considerar la gestión de conflictos durante la importación.
 **RESULTADO ESPERADO**: El usuario puede exportar e importar sus datos de vehículos, registros de mantenimiento y recordatorios.
 **DEMO**: Funcionalidad de exportación/importación funcionando.
+
+### 12. **Añadir campo "nombre" al formulario de registros** ⏳ **EN PROGRESO**
+**CONTEXTO**: Los registros ahora tienen un campo `name` opcional, pero el formulario no permite introducirlo
+**PASOS ESPECÍFICOS**:
+- Actualizar `ServiceRecordFormScreen` con nuevo `TextField` para nombre
+- Agregar strings de localización (English y Spanish)
+- Regenerar l10n con `flutter gen-l10n`
+- Pasar el nombre al crear/editar registros
+- Actualizar tests
+**RESULTADO ESPERADO**: Usuarios pueden introducir nombres personalizados para registros
+**DEMO**: Crear un registro con nombre, ver que aparece en la lista
+**DOCUMENTACIÓN**: Ver `NEXT_TASK_FORM_NAME_FIELD.md` para instrucciones exactas
 
 ### 11. **Registros de mantenimiento**
 

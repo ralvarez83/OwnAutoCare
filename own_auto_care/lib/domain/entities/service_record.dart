@@ -10,12 +10,13 @@ class ServiceRecord extends Equatable {
   final String id;
   final String vehicleId;
   final DateTime date;
-  final int mileageKm;
+  final int? mileageKm;
   final VisitType visitType;
   final ItvResult? itvResult; // Only for VisitType.itv
   final List<ServiceItem> items;
   final double cost; // Total cost of the visit
   final String currency;
+  final String? name; // Optional name for the record
   final String? notes; // General notes for the visit
   final List<Attachment> attachments;
 
@@ -23,12 +24,13 @@ class ServiceRecord extends Equatable {
     required this.id,
     required this.vehicleId,
     required this.date,
-    required this.mileageKm,
+    this.mileageKm,
     this.visitType = VisitType.maintenance,
     this.itvResult,
     required this.items,
     required this.cost,
     required this.currency,
+    this.name,
     this.notes,
     required this.attachments,
   });
@@ -44,6 +46,7 @@ class ServiceRecord extends Equatable {
         items,
         cost,
         currency,
+        name,
         notes,
         attachments,
       ];
@@ -112,6 +115,7 @@ class ServiceRecord extends Equatable {
       items: items,
       cost: (json['cost'] as num).toDouble(),
       currency: json['currency'],
+      name: json['name'],
       notes: json['notes'],
       attachments: (json['attachments'] as List<dynamic>?)
               ?.map((a) => Attachment.fromJson(a as Map<String, dynamic>))
@@ -131,9 +135,40 @@ class ServiceRecord extends Equatable {
       'items': items.map((i) => i.toJson()).toList(),
       'cost': cost,
       'currency': currency,
+      'name': name,
       'notes': notes,
       'attachments': attachments.map((a) => a.toJson()).toList(),
     };
+  }
+
+  ServiceRecord copyWith({
+    String? id,
+    String? vehicleId,
+    DateTime? date,
+    int? mileageKm,
+    VisitType? visitType,
+    ItvResult? itvResult,
+    List<ServiceItem>? items,
+    double? cost,
+    String? currency,
+    String? name,
+    String? notes,
+    List<Attachment>? attachments,
+  }) {
+    return ServiceRecord(
+      id: id ?? this.id,
+      vehicleId: vehicleId ?? this.vehicleId,
+      date: date ?? this.date,
+      mileageKm: mileageKm ?? this.mileageKm,
+      visitType: visitType ?? this.visitType,
+      itvResult: itvResult ?? this.itvResult,
+      items: items ?? this.items,
+      cost: cost ?? this.cost,
+      currency: currency ?? this.currency,
+      name: name ?? this.name,
+      notes: notes ?? this.notes,
+      attachments: attachments ?? this.attachments,
+    );
   }
 }
 

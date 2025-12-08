@@ -448,4 +448,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noMileageRecorded => 'Sin kilometraje';
+
+  @override
+  String get logoutConfirmTitle => 'Cerrar Sesión';
+
+  @override
+  String get logoutConfirmMessage =>
+      '¿Estás seguro de que quieres cerrar sesión?';
+
+  @override
+  String get confirm => 'Confirmar';
+
+  @override
+  String get serviceRecordName => 'Nombre del registro (opcional)';
+
+  @override
+  String get serviceRecordNameHint =>
+      'p.ej., Cambio de aceite rutinario, Inspección anual';
 }

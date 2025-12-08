@@ -130,5 +130,10 @@
   "rename": "Renombrar",
   "delete": "Eliminar",
   "deleteConfigConfirmation": "¿Seguro que quieres eliminar esta configuración?",
-  "cannotDeleteLastConfig": "No se puede eliminar la última configuración."
+  "cannotDeleteLastConfig": "No se puede eliminar la última configuración.",
+  "logoutConfirmTitle": "Cerrar Sesión",
+  "logoutConfirmMessage": "¿Estás seguro de que quieres cerrar sesión?",
+  "confirm": "Confirmar",
+  "serviceRecordName": "Nombre del registro (opcional)",
+  "serviceRecordNameHint": "p.ej., Cambio de aceite rutinario, Inspección anual"
 }

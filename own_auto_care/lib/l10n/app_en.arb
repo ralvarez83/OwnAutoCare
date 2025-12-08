@@ -549,5 +549,25 @@
   "noMileageRecorded": "No mileage recorded",
   "@noMileageRecorded": {
     "description": "Message when no mileage is found"
+  },
+  "logoutConfirmTitle": "Logout",
+  "@logoutConfirmTitle": {
+    "description": "Title for logout confirmation dialog"
+  },
+  "logoutConfirmMessage": "Are you sure you want to logout?",
+  "@logoutConfirmMessage": {
+    "description": "Message for logout confirmation dialog"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Label for confirm button"
+  },
+  "serviceRecordName": "Record name (optional)",
+  "@serviceRecordName": {
+    "description": "Label for service record name field"
+  },
+  "serviceRecordNameHint": "e.g., Routine oil change, Annual inspection",
+  "@serviceRecordNameHint": {
+    "description": "Hint text for service record name field"
   }
 }

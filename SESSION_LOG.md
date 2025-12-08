@@ -199,10 +199,111 @@ Se realizaron múltiples intentos para implementar `renderButton`, pero todos re
     *   `lib/presentation/theme/app_theme.dart`
     *   `lib/presentation/widgets/vehicle_card.dart`
     *   `lib/presentation/widgets/service_timeline_tile.dart`
+    *   `lib/presentation/widgets/vehicle_card.dart`
+    *   `lib/presentation/widgets/service_timeline_tile.dart`
 *   **Modified Files**:
     *   `lib/main.dart`
     *   `lib/presentation/screens/vehicle_list/vehicle_list_screen.dart`
     *   `lib/presentation/screens/service_record_list/service_record_list_screen.dart`
+
+### 📊 Project Status
+*   **Current Version**: Dev (UX/UI Update)
+*   **Known Issues**: None.
+*   **Next Steps**: User verification and feedback.
+
+---
+
+## 📅 Sesión #8 - 2025-11-24
+**Agente**: GitHub Copilot  
+**Duración**: ~45 min  
+**Tarea realizada**: Auditoría, fixes de compilación, detección de idiomas, mejora de UI de registros
+
+### ✅ Completado
+
+#### Parte 1: Auditoría y Fixes de Compilación
+- ✅ Auditoría completa del roadmap en NEXT_TASKS.md (30+ tareas implementadas, verificadas)
+- ✅ Identificados y solucionados errores de compilación:
+  - **Problema**: Archivos `.arb` (localization) con backticks corruptos (```` al final de archivo)
+  - **Solución**: Eliminados caracteres extras y regenerado l10n con `flutter gen-l10n`
+- ✅ Ejecución de suite de tests completa: **30/30 PASSED** ✅
+
+#### Parte 2: Detección Automática de Idioma
+- ✅ Implementado `LocaleDetector` para detectar idioma del sistema operativo
+- ✅ Actualizado `main.dart` con `localeResolutionCallback` para matching de locales
+- ✅ Testing en web: Español detectado correctamente ✅
+- ✅ Testing en macOS: Español detectado correctamente ✅
+- ✅ Fallback automático a English si no hay coincidencia
+
+#### Parte 3: Mejora de Identificación de Registros de Servicio (PRINCIPAL)
+- ✅ **Problema identificado**: Al agregar un registro nuevo, el listado mostraba "0" sin identificación clara
+- ✅ **Solución implementada**: Campo opcional `name` en ServiceRecord
+  
+  **Domain Layer** (`lib/domain/entities/service_record.dart`):
+  - ✅ Agregado campo: `final String? name;` (nullable)
+  - ✅ Actualizado constructor con parámetro `this.name,`
+  - ✅ Actualizada lista de `props` para Equatable
+  - ✅ Actualizado `fromJson()` para leer `json['name']` (backward compatible)
+  - ✅ Actualizado `toJson()` para serializar `'name': name`
+  - ✅ Agregado método `copyWith()` con soporte para actualizar nombre
+
+  **Presentation Layer** (`lib/presentation/widgets/service_timeline_tile.dart`):
+  - ✅ Agregadas variables `String title;` y `String subtitle;`
+  - ✅ Implementada lógica inteligente de display:
+    - Si `record.name` existe y no está vacío: **muestra nombre + fecha**
+    - Si no tiene nombre: **muestra tipos de servicio concatenados + fecha**
+    - Ejemplo fallback: "Oil Change, Brake Pads, 24/11/2025"
+  - ✅ Casos especiales:
+    - ITV con nombre: muestra nombre + fecha
+    - ITV sin nombre: muestra "ITV: Favorable/Unfavorable" + fecha
+  - ✅ Reemplazado hardcoded `DateFormat('MMM d, y')` con variable `subtitle`
+
+### 🔧 Cambios técnicos
+
+**Archivos modificados**:
+1. `lib/domain/entities/service_record.dart` - Entidad actualizada
+2. `lib/presentation/widgets/service_timeline_tile.dart` - Widget de presentación actualizado
+3. `lib/l10n/app_en.arb` - Fixed (eliminados backticks)
+4. `lib/l10n/app_es.arb` - Fixed (eliminados backticks)
+5. `lib/main.dart` - Locale resolution callback agregado
+6. `lib/shared/locale/locale_detector.dart` - Nueva utilidad de detección
+7. `test/widget_test.dart` - Fixed localization support
+
+**Archivos sin cambios pero verificados**:
+- Domain entities: Vehicle, Reminder, Attachment (estructuras intactas)
+- Application layer: Todos los use cases compilando
+- Infrastructure layer: Providers funcionando
+
+### ✅ Validación
+
+- **Compilación**: ✅ `flutter build web --release` exitosa
+- **Tests**: ✅ Todos los 30 tests pasando
+- **Type Safety**: ✅ No hay errores de tipo
+- **Backward Compatibility**: ✅ Registros antiguos sin `name` cargan correctamente (null)
+
+### 📊 Project Status
+- **Current Version**: v0.7.2 (Stabilization + UX Improvements)
+- **Known Issues**: None - app compiles and runs
+- **Test Coverage**: 30/30 tests passing
+- **Compilation Status**: ✅ Clean build
+
+### ⏳ Próximos pasos inmediatos
+1. **Actualizar formulario** (`ServiceRecordFormScreen`): Añadir TextField para que usuarios introduzcan nombre personalizado del registro
+2. **Test adicionales**: Crear tests para nuevo campo `name` en `service_record_use_cases_test.dart`
+3. **Integración de formulario**: Pasar valor de nombre cuando se crea/edita un ServiceRecord
+4. **Prueba manual**: Crear registro con nombre y sin nombre, verificar display correcto en lista
+
+### 💾 Archivos de documentación creados
+- `IMPLEMENTATION_SUMMARY.md` - Resumen técnico completo de cambios de esta sesión
+
+### 💡 Notas para próximos agentes
+- **El campo `name` es backward compatible**: Registros viejos sin este campo siguen siendo válidos (JSON defaults a null)
+- **Display inteligente ya implementado**: Si no hay nombre, muestra tipos de servicio en lugar de "0"
+- **Priority**: Próximo paso crucial es formulario - sin él, usuarios no pueden introducir nombres
+- **Testing**: App compila en todos los modos (debug, release, web). Todos los tests pasan.
+
+---
+
+
 
 ### 📊 Project Status
 *   **Current Version**: Dev (UX/UI Update)

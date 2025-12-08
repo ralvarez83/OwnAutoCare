@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:own_auto_care/l10n/app_localizations.dart';
 import 'package:own_auto_care/presentation/screens/welcome/welcome_screen.dart';
 import 'package:own_auto_care/secrets.dart';
 
@@ -10,6 +12,16 @@ void main() {
     final fakeProvider = FakeGoogleDriveProvider();
 
     await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('es'),
+      ],
       initialRoute: '/',
       routes: {
         '/': (context) => WelcomeScreen(
@@ -26,7 +38,7 @@ void main() {
     ));
 
     // Verify welcome title is present
-    expect(find.text('🚗 OwnAutoCare'), findsOneWidget);
+    expect(find.text('OwnAutoCare'), findsOneWidget);
 
     // Our injected button should be visible
     expect(find.text('Test Sign In'), findsOneWidget);

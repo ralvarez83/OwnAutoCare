@@ -185,7 +185,7 @@ class _ServiceRecordListScreenState extends State<ServiceRecordListScreen> {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          _records.isNotEmpty
+                                          _records.isNotEmpty && _records.first.mileageKm != null
                                               ? '${_records.first.mileageKm} km'
                                               : l10n.noMileageRecorded,
                                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -278,10 +278,23 @@ class _ServiceRecordListScreenState extends State<ServiceRecordListScreen> {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final record = _records[index];
+                          
+                          // Calculate earliest and latest dates for date range display
+                          DateTime? earliestDate;
+                          DateTime? latestDate;
+                          if (_records.length > 1) {
+                            final dates = _records.map((r) => r.date).toList();
+                            dates.sort();
+                            earliestDate = dates.first;
+                            latestDate = dates.last;
+                          }
+                          
                           return ServiceTimelineTile(
                             record: record,
                             isFirst: index == 0,
                             isLast: index == _records.length - 1,
+                            earliestDate: earliestDate,
+                            latestDate: latestDate,
                             onTap: () async {
                                 // Edit on tap for now, or show details
                                 setState(() => _isLoading = true);

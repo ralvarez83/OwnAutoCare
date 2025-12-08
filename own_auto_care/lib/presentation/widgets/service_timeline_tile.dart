@@ -11,6 +11,8 @@ class ServiceTimelineTile extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final DateTime? earliestDate; // Earliest date in the record list
+  final DateTime? latestDate;   // Latest date in the record list
 
   const ServiceTimelineTile({
     super.key,
@@ -20,6 +22,8 @@ class ServiceTimelineTile extends StatelessWidget {
     required this.onTap,
     required this.onEdit,
     required this.onDelete,
+    this.earliestDate,
+    this.latestDate,
   });
 
   IconData _getIconForType(String type) {
@@ -72,18 +76,39 @@ class ServiceTimelineTile extends StatelessWidget {
     }
   }
 
+  /// Formats date with optional range information
+  /// Shows a range if this record is between earliest and latest dates
+  String _formatDateWithRange(DateTime date) {
+    final formattedDate = DateFormat('dd/MM/yyyy').format(date);
+    
+    // If we have earliest/latest dates and this record is between them
+    if (earliestDate != null && latestDate != null) {
+      final daysFromEarliest = date.difference(earliestDate!).inDays;
+      final daysFromLatest = latestDate!.difference(date).inDays;
+      
+      // Show range if there's meaningful time between records
+      if (daysFromEarliest > 0 && daysFromLatest > 0) {
+        final rangeText = '(${DateFormat('dd/MM/yy').format(earliestDate!)} - ${DateFormat('dd/MM/yy').format(latestDate!)})';
+        return '$formattedDate $rangeText';
+      }
+    }
+    
+    return formattedDate;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     
-    // Determine display properties based on items
     // Determine display properties based on visit type
     String title;
+    String subtitle;
     IconData displayIcon;
     Color displayColor;
 
     if (record.visitType == VisitType.itv) {
-      title = '${l10n.visitTypeItv}: ${record.itvResult == ItvResult.favorable ? l10n.itvResultFavorable : l10n.itvResultUnfavorable}';
+      title = record.name ?? '${l10n.visitTypeItv}: ${record.itvResult == ItvResult.favorable ? l10n.itvResultFavorable : l10n.itvResultUnfavorable}';
+      subtitle = _formatDateWithRange(record.date);
       displayIcon = record.itvResult == ItvResult.favorable ? Icons.check_circle : Icons.cancel;
       displayColor = record.itvResult == ItvResult.favorable ? Colors.green : Colors.red;
     } else {
@@ -93,7 +118,20 @@ class ServiceTimelineTile extends StatelessWidget {
       displayIcon = isMultiple ? Icons.car_repair : _getIconForType(primaryType);
       displayColor = isMultiple ? AppColors.primary : _getColorForType(primaryType);
       
-      title = record.items.map((i) => _getLocalizedServiceType(context, i.type)).join(', ');
+      // If record has a name, use it; otherwise use service type(s) and date
+      if (record.name != null && record.name!.isNotEmpty) {
+        title = record.name!;
+        subtitle = _formatDateWithRange(record.date);
+      } else {
+        // Fallback to service types if available, or visitType
+        if (record.items.isNotEmpty) {
+          final serviceTypes = record.items.map((i) => _getLocalizedServiceType(context, i.type)).join(', ');
+          title = serviceTypes;
+        } else {
+          title = l10n.serviceTypeOther;
+        }
+        subtitle = _formatDateWithRange(record.date);
+      }
     }
 
     return IntrinsicHeight(
@@ -191,7 +229,7 @@ class ServiceTimelineTile extends StatelessWidget {
                                         ),
                                   ),
                                   Text(
-                                    DateFormat('MMM d, y').format(record.date),
+                                    subtitle,
                                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                           color: AppColors.textSecondary,
                                         ),
@@ -243,7 +281,9 @@ class ServiceTimelineTile extends StatelessWidget {
                                 const Icon(Icons.speed, size: 16, color: AppColors.textSecondary),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '${NumberFormat('#,###').format(record.mileageKm)} km',
+                                  record.mileageKm != null
+                                      ? '${NumberFormat('#,###').format(record.mileageKm)} km'
+                                      : '--',
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ],

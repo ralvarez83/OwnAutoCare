@@ -1,9 +1,9 @@
 # 📊 ESTADO ACTUAL DEL PROYECTO
 
 > **PARA AGENTES**: Este archivo te dice exactamente dónde está el proyecto AHORA  
-> **Fecha actualización**: 2025-11-21  
-> **Fase**: Interfaz básica (MVP) implementada + Exportación/Importación
-> **Agente anterior**: Antigravity (completó tarea #10)
+> **Fecha actualización**: 2025-11-24  
+> **Fase**: Estabilización y mejoras de UX (compilación ✅, tests ✅, locales ✅)
+> **Agente anterior**: GitHub Copilot (completó auditoría y fixes)
 > **Contexto**: App multiplataforma Flutter para registrar mantenimiento de coches
 
 ## ✅ Lo que YA está hecho
@@ -36,18 +36,38 @@
 - **✅ Tarea #11**: UX/UI Overhaul (Midnight Performance Theme)
 
 ## 🚧 En qué estamos trabajando ahora
-- **Próxima tarea**: Tarea #11 - (Por definir / Revisar NEXT_TASKS)
+- **Tarea completada**: Fase #12 - Implementación de campo "nombre" en formulario ✅
+  - ✅ Variable `_recordName` agregada al estado
+  - ✅ TextField con validación (máx 100 caracteres)
+  - ✅ Strings de localización (English + Spanish)
+  - ✅ Nombre guardado en ServiceRecord
+  - ✅ Edición de registros preserva nombre
+  - ✅ Compilación exitosa ✅
+  - ✅ Todos los tests pasan (30/30) ✅
+  - **PRÓXIMO PASO**: Verificación manual y próxima fase
 
-## 🛠️ Últimas acciones (21 de noviembre de 2025)
-1. Implementación de Exportación/Importación:
-   - Implementados casos de uso `ExportData` y `ImportData`.
-   - Añadida pantalla `SettingsScreen` con opciones de exportar e importar.
-   - Integrada navegación desde `VehicleListScreen`.
-   - Añadidas dependencias `file_picker`, `share_plus`, `path_provider`.
-   - Tests unitarios pasando para los casos de uso.
-2. UX/UI Overhaul:
-    - Implementado tema "Midnight Performance" (Dark Mode).
-    - Creados widgets `VehicleCard` y `ServiceTimelineTile`.
+## 🛠️ Últimas acciones (24 de noviembre de 2025 - Continuación)
+
+### Fase 4: Implementación de Formulario (NUEVA - HOY)
+1. ✅ Agregada variable `_recordName` al estado del formulario
+2. ✅ Implementado TextField con:
+   - Label: "Record name (optional)" / "Nombre del registro (opcional)"
+   - Hint: "e.g., Routine oil change..." / "p.ej., Cambio de aceite..."
+   - Max length: 100 caracteres
+   - Counter visual de caracteres
+   - Icono de label (🏷️)
+3. ✅ Actualizado `initState()` para cargar nombres existentes
+4. ✅ Pasar `name: _recordName` al crear ServiceRecord
+5. ✅ Strings de localización en ambos idiomas
+6. ✅ Regenerado l10n: `flutter gen-l10n`
+7. ✅ Compilación: `flutter build web --release` exitosa
+8. ✅ Tests: 30/30 PASSED
+
+## 📋 Próximos pasos inmediatos
+1. ✅ Verificación manual - crear registro con nombre
+2. ✅ Testear edición de registros existentes
+3. ✅ Validar backward compatibility con registros antiguos
+4. ⏳ Documentación de usuario final (opcional)
     - Refactorizadas pantallas `VehicleListScreen` y `ServiceRecordListScreen`.
     - Añadida tipografía `GoogleFonts.outfit`.
 
